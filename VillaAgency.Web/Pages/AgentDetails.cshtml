@@ -1,0 +1,59 @@
+﻿@page "{id:guid}"
+@model VillaAgency.Web.Pages.AgentDetailsModel
+@{
+    ViewData["Title"] = $"پروفایل مشاور: {Model.Agent.FullName}";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="breadcrumb"><a asp-page="/Index">خانه</a> / <a asp-page="/Agents">مشاوران</a> / @Model.Agent.FullName</span>
+                <h3>پروفایل مشاور</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-property section">
+    <div class="container">
+        <div class="row">
+            <!-- بخش اطلاعات مشاور -->
+            <div class="col-lg-4">
+                <div class="agent-info-table">
+                    <img src="~/images/agents/@(Model.Agent.ProfileImageUrl ?? "default-agent.jpg")" alt="عکس پروفایل @Model.Agent.FullName" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <h4>@Model.Agent.FullName</h4>
+                    <p>مشاور املاک</p>
+                    <ul>
+                        <li><i class="fa fa-envelope"></i> @Model.Agent.Email</li>
+                        <li><i class="fa fa-phone"></i> @Model.Agent.PhoneNumber</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- بخش لیست املاک مشاور -->
+            <div class="col-lg-8">
+                <h4 class="mb-4">املاک ثبت شده توسط @Model.Agent.FullName</h4>
+                <div class="row">
+                    @if (Model.Properties.Any())
+                    {
+                        @foreach (var property in Model.Properties)
+                        {
+                            <div class="col-lg-6 col-md-6">
+                                <div class="item">
+                                    <a asp-page="/PropertyDetails" asp-route-id="@property.Id"><img src="@(property.ImageUrls.FirstOrDefault() ?? "property-01.jpg")" alt="تصویر ملک"></a>
+                                    <span class="category">@property.CategoryName</span>
+                                    <h6>@property.Price.ToString("N0") تومان</h6>
+                                    <h4><a asp-page="/PropertyDetails" asp-route-id="@property.Id">@property.Title</a></h4>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>در حال حاضر هیچ ملکی توسط این مشاور ثبت نشده است.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

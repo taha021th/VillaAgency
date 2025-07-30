@@ -1,0 +1,30 @@
+﻿@page "{id:guid}"
+@model VillaAgency.Web.Pages.Admin.Categories.DeleteModel
+@{
+    ViewData["Title"] = "حذف دسته‌بندی";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>تایید حذف</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h4 class="text-danger">آیا از حذف دسته‌بندی "@Model.Category.Name" اطمینان دارید؟</h4>
+                <form method="post">
+                    <input type="hidden" asp-for="Command.Id" />
+                    <button type="submit" class="btn btn-danger">بله، حذف کن</button>
+                    <a asp-page="Index" class="btn btn-secondary">انصراف</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

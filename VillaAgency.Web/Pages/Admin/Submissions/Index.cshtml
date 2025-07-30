@@ -1,0 +1,58 @@
+﻿@page
+@model VillaAgency.Web.Pages.Admin.Submissions.IndexModel
+@{
+    ViewData["Title"] = "درخواست‌های سپردن ملک";
+}
+
+<div class="bg-slate-50 p-4 md:p-6 lg:p-8">
+    <!-- بخش هدر صفحه -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">مدیریت درخواست‌های سپردن ملک</h1>
+        <p class="mt-2 text-sm text-gray-500">درخواست‌های ثبت شده توسط کاربران را بررسی و مدیریت کنید.</p>
+    </div>
+
+    <!-- جدول نمایش درخواست‌ها -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-right">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="p-3 font-semibold text-gray-600">نام کامل متقاضی</th>
+                        <th class="p-3 font-semibold text-gray-600">شماره تماس</th>
+                        <th class="p-3 font-semibold text-gray-600">نوع معامله</th>
+                        <th class="p-3 font-semibold text-gray-600">تاریخ ثبت</th>
+                        <th class="p-3 font-semibold text-gray-600">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.PendingSubmissions != null && Model.PendingSubmissions.Any())
+                    {
+                        @foreach (var item in Model.PendingSubmissions)
+                        {
+                            <tr class="border-b border-gray-100 last:border-b-0">
+                                <td class="p-3 text-gray-800 font-medium">@item.FullName</td>
+                                <td class="p-3 text-gray-500" dir="ltr">@item.PhoneNumber</td>
+                                <td class="p-3 text-gray-500">@item.TransactionType</td>
+                                <td class="p-3 text-gray-500">@item.SubmittedAt.ToString("yyyy/MM/dd - HH:mm")</td>
+                                <td class="p-3">
+                                    <!-- **اصلاح شد:** لینک دکمه به صورت مستقیم ساخته شد تا از عملکرد صحیح آن اطمینان حاصل شود -->
+                                    <a href="/Admin/Submissions/Create?submissionId=@item.Id" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                                        بررسی و ایجاد ملک
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center p-4 text-gray-500">
+                                در حال حاضر هیچ درخواست جدیدی برای بررسی وجود ندارد.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

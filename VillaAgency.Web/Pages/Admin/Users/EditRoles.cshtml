@@ -1,0 +1,49 @@
+﻿@page "{id}"
+@model VillaAgency.Web.Pages.Admin.Users.EditRolesModel
+@{
+    ViewData["Title"] = "ویرایش نقش‌های کاربر";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>ویرایش نقش‌های کاربر: @Model.UserName</h3>
+                <span class="breadcrumb"><a asp-page="/Admin/Users/Index">مدیریت کاربران</a> / ویرایش نقش‌ها</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <form method="post">
+                    <input type="hidden" name="userId" value="@Model.UserId" />
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>تخصیص نقش‌ها</h5>
+                        </div>
+                        <div class="card-body">
+                            @for (int i = 0; i < Model.Roles.Count; i++)
+                            {
+                                <div class="form-check m-1">
+                                    <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
+                                    <input asp-for="@Model.Roles[i].IsSelected" class="form-check-input" />
+                                    <label class="form-check-label" asp-for="@Model.Roles[i].IsSelected">
+                                        @Model.Roles[i].RoleName
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
+                            <a asp-page="Index" class="btn btn-secondary">بازگشت به لیست</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

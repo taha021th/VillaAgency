@@ -1,0 +1,106 @@
+﻿@page
+@model VillaAgency.Web.Pages.Admin.Submissions.CreateModel
+@{
+    ViewData["Title"] = "ایجاد ملک از روی درخواست";
+}
+
+<div class="bg-slate-50 p-4 md:p-6 lg:p-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">ایجاد ملک از روی درخواست</h1>
+        <p class="mt-2 text-sm text-gray-500">
+            اطلاعات ثبت شده توسط کاربر را بررسی، تکمیل و سپس ملک را در سایت منتشر کنید.
+        </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+            <input type="hidden" asp-for="SubmissionId" />
+
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+
+                <div class="sm:col-span-6"><label asp-for="CreatePropertyCommand.Title" class="block text-sm font-medium text-gray-700">عنوان</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Title" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Title" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-6"><label asp-for="CreatePropertyCommand.Description" class="block text-sm font-medium text-gray-700">توضیحات</label><div class="mt-1"><textarea asp-for="CreatePropertyCommand.Description" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea><span asp-validation-for="CreatePropertyCommand.Description" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-6"><label asp-for="CreatePropertyCommand.Address" class="block text-sm font-medium text-gray-700">آدرس</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Address" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Address" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-3"><label asp-for="CreatePropertyCommand.Price" class="block text-sm font-medium text-gray-700">قیمت (تومان)</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Price" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Price" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-3"><label asp-for="CreatePropertyCommand.Area" class="block text-sm font-medium text-gray-700">متراژ (متر مربع)</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Area" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Area" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.Bedrooms" class="block text-sm font-medium text-gray-700">تعداد خواب</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Bedrooms" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Bedrooms" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.Floor" class="block text-sm font-medium text-gray-700">طبقه</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Floor" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Floor" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.FloorsCount" class="block text-sm font-medium text-gray-700">تعداد کل طبقات</label><div class="mt-1"><input asp-for="CreatePropertyCommand.FloorsCount" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.FloorsCount" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.Unit" class="block text-sm font-medium text-gray-700">شماره واحد</label><div class="mt-1"><input asp-for="CreatePropertyCommand.Unit" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.Unit" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.UnitsCountInFloor" class="block text-sm font-medium text-gray-700">واحد در طبقه</label><div class="mt-1"><input asp-for="CreatePropertyCommand.UnitsCountInFloor" type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><span asp-validation-for="CreatePropertyCommand.UnitsCountInFloor" class="text-danger text-xs"></span></div></div>
+                <div class="sm:col-span-2"><label asp-for="CreatePropertyCommand.BuildDate"></label><input asp-for="CreatePropertyCommand.BuildDate" id="buildDatePicker" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" autocomplete="off"><span asp-validation-for="CreatePropertyCommand.BuildDate" class="text-danger"></span></div>
+                <div class="sm:col-span-3"><label asp-for="CreatePropertyCommand.CategoryId" class="block text-sm font-medium text-gray-700">دسته‌بندی</label><div class="mt-1"><select asp-for="CreatePropertyCommand.CategoryId" asp-items="Model.CategoryList" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="CreatePropertyCommand.CategoryId" class="text-danger text-xs"></span></div></div>
+
+                @if (Model.SubmittedImageUrls.Any() || Model.SubmittedVideoUrls.Any())
+                {
+                    <div class="sm:col-span-6">
+                        <label class="block text-sm font-medium text-gray-700">رسانه‌های ارسال شده توسط کاربر (برای حذف روی × کلیک کنید)</label>
+                        <div class="mt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 rounded-lg border border-gray-200 p-4">
+                            @foreach (var imageUrl in Model.SubmittedImageUrls)
+                            {
+                                <div class="relative media-container">
+                                    <input type="hidden" name="CreatePropertyCommand.ImageUrls" value="@imageUrl" />
+                                    <img src="@imageUrl" alt="تصویر ملک" class="rounded-lg object-cover w-full h-24">
+                                    <button type="button" class="absolute top-0 right-0 m-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700" onclick="deleteMedia(this)">&times;</button>
+                                </div>
+                            }
+                            @foreach (var videoUrl in Model.SubmittedVideoUrls)
+                            {
+                                <div class="relative col-span-2 media-container">
+                                    <input type="hidden" name="CreatePropertyCommand.VideoUrls" value="@videoUrl" />
+                                    <video controls class="rounded-lg w-full h-auto">
+                                        <source src="@videoUrl" type="video/mp4">
+                                        مرورگر شما از نمایش ویدئو پشتیبانی نمی‌کند.
+                                    </video>
+                                    <button type="button" class="absolute top-0 right-0 m-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700" onclick="deleteMedia(this)">&times;</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="pt-5 mt-5 border-t border-gray-200">
+                <div class="flex justify-end">
+                    <a asp-page="/Admin/Submission/Index" class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">انصراف</a>
+                    <button type="submit" class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                        ایجاد و انتشار ملک
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <link href="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
+
+    <script type="text/javascript">
+        // تابع برای حذف مدیا از صفحه
+        function deleteMedia(button) {
+            const mediaContainer = button.closest('.media-container');
+            if (mediaContainer) {
+                mediaContainer.remove();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            kamaDatepicker('buildDatePicker', {
+                forceDigits: 'en',
+                buttonsColor: "blue",
+                markToday: true,
+                gotoToday: true,
+                autoClose: true,
+                placeholder: "سال/ماه/روز",
+                format: "YYYY/MM/DD"
+            });
+        });
+    </script>
+}

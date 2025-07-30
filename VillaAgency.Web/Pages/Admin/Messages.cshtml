@@ -1,0 +1,49 @@
+﻿@page
+@model VillaAgency.Web.Pages.Admin.MessagesModel
+@{
+    ViewData["Title"] ="پیام‌های دریافتی";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>پیام‌های دریافتی</h3>
+                <span class="breadcrumb"><a asp-page="/Admin/Index">پنل مدیریت</a> / پیام‌ها</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                @if (Model.Messages.Any())
+                {
+                    foreach (var message in Model.Messages)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header d-flex justify-content-between">
+                                <div>
+                                    <strong>از طرف:</strong> @message.Name (@message.Email)
+                                </div>
+                                <div>
+                                    <strong>تاریخ:</strong> @message.CreatedAt.ToShortDateString()
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">موضوع: @message.Subject</h5>
+                                <p class="card-text">@message.Message</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">هیچ پیامی برای نمایش وجود ندارد.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

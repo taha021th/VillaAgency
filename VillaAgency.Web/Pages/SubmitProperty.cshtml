@@ -1,0 +1,126 @@
+﻿@page
+@model VillaAgency.Web.Pages.SubmitPropertyModel
+@{
+    ViewData["Title"] = "سپردن ملک";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="breadcrumb"><a href="/">خانه</a> / سپردن ملک</span>
+                <h3>ملک خود را به ما بسپارید</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="section-heading">
+                    <h6>| فرم سپردن ملک</h6>
+                    <h2>اطلاعات ملک خود را با دقت وارد کنید</h2>
+                </div>
+                <form class="contact-form" method="post" enctype="multipart/form-data">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- ... سایر بخش‌های فرم ... -->
+                    <h5 class="mb-3">۱. اطلاعات مالک و نوع معامله</h5>
+                    <div class="row">
+                        <div class="col-lg-4"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control" placeholder="مثال: علی رضایی"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control" placeholder="مثال: 09123456789"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4"><fieldset><label asp-for="Input.TransactionType"></label><div class="form-check form-check-inline mt-2"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید و فروش"><label class="form-check-label">خرید و فروش</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره"><label class="form-check-label">رهن و اجاره</label></div><span asp-validation-for="Input.TransactionType" class="text-danger d-block"></span></fieldset></div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۲. اطلاعات اصلی ملک</h5>
+                    <div class="row">
+                        <div class="col-lg-8"><fieldset><label asp-for="Input.Title"></label><input asp-for="Input.Title" class="form-control" placeholder="مثال: آپارتمان ۱۲۰ متری در فاز ۲"><span asp-validation-for="Input.Title" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4"><fieldset><label asp-for="Input.Price"></label><input asp-for="Input.Price" type="number" class="form-control" placeholder="به تومان"><span asp-validation-for="Input.Price" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-12"><fieldset><label asp-for="Input.Address"></label><input asp-for="Input.Address" class="form-control" placeholder="آدرس کامل ملک را وارد کنید"><span asp-validation-for="Input.Address" class="text-danger"></span></fieldset></div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۳. مشخصات فنی ملک</h5>
+                    <div class="row">
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.Area"></label><input asp-for="Input.Area" type="number" class="form-control" placeholder="متر مربع"><span asp-validation-for="Input.Area" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.Bedrooms"></label><input asp-for="Input.Bedrooms" type="number" class="form-control" placeholder="تعداد"><span asp-validation-for="Input.Bedrooms" class="text-danger"></span></fieldset></div>
+
+                        <div class="col-lg-3"><fieldset>
+                            <label asp-for="Input.BuildDate"></label>
+                                <input asp-for="Input.BuildDate"  class="form-control" id="buildDatePicker" autocomplete="off" placeholder="مثال: 1403/1/1">
+                                
+                                <span asp-validation-for="Input.BuildDate" class="text-danger"></span>
+                        </fieldset></div>
+
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.Floor"></label><input asp-for="Input.Floor" type="number" class="form-control" placeholder="شماره طبقه"><span asp-validation-for="Input.Floor" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.FloorsCount"></label><input asp-for="Input.FloorsCount" type="number" class="form-control" placeholder="تعداد کل"><span asp-validation-for="Input.FloorsCount" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.Unit"></label><input asp-for="Input.Unit" type="number" class="form-control" placeholder="شماره واحد"><span asp-validation-for="Input.Unit" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.UnitsCountInFloor"></label><input asp-for="Input.UnitsCountInFloor" type="number" class="form-control" placeholder="تعداد در طبقه"><span asp-validation-for="Input.UnitsCountInFloor" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-3"><fieldset><label asp-for="Input.CategoryId"></label><select asp-for="Input.CategoryId" asp-items="Model.CategoryList" class="form-select"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="Input.CategoryId" class="text-danger"></span></fieldset></div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۴. توضیحات و رسانه</h5>
+                    <div class="row">
+                        <div class="col-lg-12"><fieldset><label asp-for="Input.Description"></label><textarea asp-for="Input.Description" class="form-control" style="min-height: 150px;" placeholder="امکانات، ویژگی‌های خاص، شرایط و ..."></textarea><span asp-validation-for="Input.Description" class="text-danger"></span></fieldset></div>
+
+                        <div class="col-lg-6 mt-3">
+                            <fieldset>
+                                <label asp-for="Input.ImageFiles">تصاویر ملک (امکان انتخاب چند فایل)</label>
+                                <input asp-for="Input.ImageFiles" type="file" multiple class="form-control" accept="image/*">
+                                <span asp-validation-for="Input.ImageFiles" class="text-danger"></span>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-6 mt-3">
+                            <fieldset>
+                                <!-- **اصلاح شد:** امکان انتخاب چند فایل ویدئو فراهم شد -->
+                                <label asp-for="Input.VideoFiles">ویدئوهای معرفی ملک (امکان انتخاب چند فایل)</label>
+                                <input asp-for="Input.VideoFiles" type="file" multiple class="form-control" accept="video/mp4,video/x-m4v,video/*">
+                                <span asp-validation-for="Input.VideoFiles" class="text-danger"></span>
+                            </fieldset>
+                        </div>
+
+                        <div class="col-lg-12 mt-4">
+                            <fieldset>
+                                <button type="submit" class="main-button">ثبت و ارسال اطلاعات ملک</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <link href="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+
+            kamaDatepicker('buildDatePicker', {
+        forceDigits: 'en',
+        buttonsColor: "blue",
+        markToday: true,
+        gotoToday: true,
+        autoClose: true,
+        placeholder: "سال/ماه/روز",
+        format: "YYYY/MM/DD"
+        });
+
+        });
+    </script>
+}

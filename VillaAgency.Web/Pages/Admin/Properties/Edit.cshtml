@@ -1,0 +1,123 @@
+﻿@page "{id:guid}"
+@model EditModel
+@{
+    ViewData["Title"] = "ویرایش ملک";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>ویرایش ملک: @Model.PropertyCommand.Title</h3>
+                <span class="breadcrumb"><a asp-page="/Admin/Index">پنل مدیریت</a> / ویرایش ملک</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <input type="hidden" asp-for="PropertyCommand.Id" />
+
+                    <div class="mb-4">
+                        <h5>رسانه‌های فعلی</h5>
+                        <div id="current-media-gallery" class="row g-2">
+                            @if (Model.PropertyCommand.ImageUrls != null && Model.PropertyCommand.ImageUrls.Any())
+
+                            {
+                                <div class="col-12"><p class="mt-3 mb-2 text-muted">تصاویر:</p></div>
+                                @foreach (var imageUrl in Model.PropertyCommand.ImageUrls)
+
+                                {
+                                    <div class="col-md-3 media-container">
+                                        <input type="hidden" name="PropertyCommand.ImageUrls" value="@imageUrl" />
+                                        <div class="position-relative">
+                                            <img src="@Url.Content(imageUrl)" class="img-fluid rounded" alt="Property Image" />
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="deleteMedia(this)">&times;</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            @if (Model.PropertyCommand.VideoUrls != null && Model.PropertyCommand.VideoUrls.Any())
+
+                            {
+                                <div class="col-12"><p class="mt-3 mb-2 text-muted">ویدئوها:</p></div>
+                                @foreach (var videoUrl in Model.PropertyCommand.VideoUrls)
+
+                                {
+                                    <div class="col-md-4 media-container">
+                                        <input type="hidden" name="PropertyCommand.VideoUrls" value="@videoUrl" />
+                                        <div class="position-relative">
+                                            <video controls src="@Url.Content(videoUrl)" class="img-fluid rounded"></video>
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="deleteMedia(this)">&times;</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <hr />
+
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.CategoryId" class="control-label">دسته‌بندی</label><select asp-for="PropertyCommand.CategoryId" class="form-control" asp-items="Model.CategoryList"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="PropertyCommand.CategoryId" class="text-danger"></span></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Title" class="control-label"></label><input asp-for="PropertyCommand.Title" class="form-control" /></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Price"></label><input asp-for="PropertyCommand.Price" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Area"></label><input asp-for="PropertyCommand.Area" class="form-control" /></div></div></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Bedrooms"></label><input asp-for="PropertyCommand.Bedrooms" class="form-control" /></div></div></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Address"></label><input asp-for="PropertyCommand.Address" class="form-control" /></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Description"></label><input asp-for="PropertyCommand.Description" class="form-control" /></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Floor"></label><input asp-for="PropertyCommand.Floor" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.FloorsCount"></label><input asp-for="PropertyCommand.FloorsCount" class="form-control" /></div></div></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.UnitsCountInFloor"></label><input asp-for="PropertyCommand.UnitsCountInFloor" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Unit"></label><input asp-for="PropertyCommand.Unit" class="form-control" /></div></div></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.BuildDate"></label><input asp-for="PropertyCommand.BuildDate" id="buildDatePicker" class="form-control" /></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="NewImageFiles" class="control-label">افزودن تصاویر جدید</label>
+                        <input asp-for="NewImageFiles" class="form-control" type="file" multiple />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="NewVideoFiles" class="control-label">افزودن ویدئوهای جدید</label>
+                        <input asp-for="NewVideoFiles" class="form-control" type="file" multiple />
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
+                        <a asp-page="./Index" class="btn btn-secondary">بازگشت به لیست</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <link href="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
+
+    <script type="text/javascript">
+        // 🚀 تابع جدید برای حذف مدیا از صفحه
+        function deleteMedia(button) {
+            const mediaContainer = button.closest('.media-container');
+            if (mediaContainer) {
+                mediaContainer.remove();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            kamaDatepicker('buildDatePicker', {
+                forceDigits: 'en',
+                buttonsColor: "blue",
+                markToday: true,
+                gotoToday: true,
+                autoClose: true,
+                placeholder: "سال/ماه/روز",
+                format: "YYYY/MM/DD"
+            });
+        });
+    </script>
+}

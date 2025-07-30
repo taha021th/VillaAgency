@@ -1,0 +1,145 @@
+﻿@page "{id:guid}"
+@model VillaAgency.Web.Pages.PropertyDetailsModel
+@{
+    ViewData["Title"] = Model.Property?.Title ?? "جزئیات ملک";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="breadcrumb"><a asp-page="/Index">خانه</a> / جزئیات ملک</span>
+                <h3>@Model.Property.Title</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-property section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="main-image">
+                    <img src="@(Model.Property.ImageUrls != null && Model.Property.ImageUrls.Any() ? Url.Content(Model.Property.ImageUrls.First()) : Url.Content("~/images/single-property.jpg"))" alt="تصویر اصلی ملک">
+                </div>
+                <div class="main-content">
+                    <span class="category">@Model.Property.CategoryName</span>
+                    <h4>@Model.Property.Address</h4>
+                    <p>@Model.Property.Description</p>
+                </div>
+
+                <!-- **اصلاح شد:** گالری اکنون ابتدا ویدئوها و سپس تصاویر را نمایش می‌دهد -->
+                <div class="property-gallery mt-5">
+                    <h5 class="mb-3" style="font-weight: 700;">گالری رسانه</h5>
+                    <div class="row g-3">
+
+                        <!-- بخش نمایش ویدئوها -->
+                        @if (Model.Property.VideoUrls != null && Model.Property.VideoUrls.Any())
+                        {
+                            @foreach (var videoUrl in Model.Property.VideoUrls)
+                            {
+                                <div class="col-md-6">
+                                    <video controls class="img-fluid rounded" style="width: 100%; height: 200px; object-fit: cover;">
+                                        <source src="@Url.Content(videoUrl)" type="video/mp4">
+                                        مرورگر شما از نمایش ویدئو پشتیبانی نمی‌کند.
+                                    </video>
+                                </div>
+                            }
+                        }
+
+                        <!-- بخش نمایش تصاویر -->
+                        @if (Model.Property.ImageUrls != null && Model.Property.ImageUrls.Any())
+                        {
+                            @foreach (var imageUrl in Model.Property.ImageUrls)
+                            {
+                                <div class="col-md-4">
+                                    <a href="@Url.Content(imageUrl)">
+                                        <img src="@Url.Content(imageUrl)" class="img-fluid rounded" alt="تصویر گالری ملک" style="width: 100%; height: 200px; object-fit: cover;">
+                                    </a>
+                                </div>
+                            }
+                        }
+
+                        <!-- پیام در صورت عدم وجود رسانه -->
+                        @if ((Model.Property.VideoUrls == null || !Model.Property.VideoUrls.Any()) && (Model.Property.ImageUrls == null || !Model.Property.ImageUrls.Any()))
+                        {
+                            <p>هیچ تصویر یا ویدئویی برای نمایش وجود ندارد.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="info-table">
+                    <ul>
+                        <li>
+                            <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                            <h4>@Model.Property.Area متر مربع<br><span>فضای کل</span></h4>
+                        </li>
+                        <li>
+                            <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                            <h4>@Model.Property.Bedrooms خوابه<br><span>تعداد اتاق خواب</span></h4>
+                        </li>
+                        <li>
+                            <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                            <h4>طبقه @Model.Property.Floor<br><span>از @Model.Property.FloorsCount طبقه</span></h4>
+                        </li>
+                        <li>
+                            <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                            <h4>واحد @Model.Property.Unit<br><span>(@Model.Property.UnitsCountInFloor واحد در طبقه)</span></h4>
+                        </li>
+                        <li>
+                            <img src="~/images/info-icon-02.png" alt="" style="max-width: 52px;">
+                            <h4>@Model.BuildDate<br><span>سال ساخت</span></h4>
+                        </li>
+                        <li>
+                            <img src="~/images/info-icon-03.png" alt="" style="max-width: 52px;">
+                            <h4>@Model.Property.Price.ToString("N0")<br><span>قیمت (تومان)</span></h4>
+                        </li>
+                    </ul>
+                </div>
+                <!-- بخش اطلاعات مشاور -->
+                <div class="mt-4 p-3 rounded" style="background-color: #f9f9f9;">
+                    <h5>مشاور مسئول</h5>
+                    <hr>
+                    <div class="agent-info d-flex align-items-center">
+                        <div>
+                            <strong>@Model.Property.AgentName</strong><br>
+                            <a asp-page="/AgentDetails" asp-route-id="@Model.Property.AgentId">مشاهده پروفایل</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- فرم درخواست بازدید -->
+                <div class="mt-4 p-3 rounded" style="background-color: #f9f9f9;">
+                    <h5>درخواست بازدید و مشاوره</h5>
+                    <hr>
+                    <form method="post">
+                        <input type="hidden" asp-for="VisitRequestCommand.PropertyId" value="@Model.Property.Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                        {
+                            <div class="alert alert-success">@Model.StatusMessage</div>
+                        }
+                        <div class="mb-2">
+                            <label asp-for="VisitRequestCommand.UserName"></label>
+                            <input asp-for="VisitRequestCommand.UserName" class="form-control" />
+                            <span asp-validation-for="VisitRequestCommand.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="VisitRequestCommand.UserPhone"></label>
+                            <input asp-for="VisitRequestCommand.UserPhone" class="form-control" />
+                            <span asp-validation-for="VisitRequestCommand.UserPhone" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="VisitRequestCommand.UserEmail"></label>
+                            <input asp-for="VisitRequestCommand.UserEmail" class="form-control" />
+                            <span asp-validation-for="VisitRequestCommand.UserEmail" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3" style="background-color: #f35525;">ارسال درخواست</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

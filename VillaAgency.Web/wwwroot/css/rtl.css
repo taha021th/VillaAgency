@@ -1,0 +1,254 @@
+/*
+  ================================================================================
+  RTL Stylesheet for Villa Agency Template (Updated)
+  - Author: Gemini
+  - This file overrides default styles to make the template Right-to-Left.
+  ================================================================================
+*/
+
+/* --- 1. General & Font Settings --- */
+body {
+  direction: rtl;
+  font-family: 'Vazirmatn', sans-serif; /* Using Vazirmatn Font */
+  text-align: right; /* Default text alignment to right */
+}
+
+/* --- 2. Header and Navigation --- */
+
+.sub-header ul.info li {
+  border-right: none;
+  border-left: 1px solid #eee;
+  margin-right: 0;
+  padding-right: 0;
+  margin-left: 25px;
+  padding-left: 25px;
+}
+
+.sub-header ul.info li:first-child {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}
+
+.sub-header ul.info li i {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+.sub-header ul.social-links {
+  text-align: left;
+}
+
+.sub-header ul.social-links li {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+.header-area .main-nav .logo {
+  left: auto;
+  right: 0;
+}
+
+.header-area .main-nav ul.nav {
+  justify-content: left;
+}
+
+/* RTL fix for Header Button */
+.header-area .main-nav .nav li:last-child a {
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+.header-area .main-nav .nav li:last-child a i {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.header-area .main-nav .menu-trigger {
+  right: auto;
+  left: 20px;
+}
+
+/* --- 3. Banner --- */
+
+.main-banner .item h2 {
+    width: 100%; /* Make title full width for better alignment */
+}
+
+.main-banner .owl-dots {
+  left: auto;
+  right: 20%;
+}
+
+.main-banner .owl-nav .owl-prev i {
+  left: auto;
+  right: 45px;
+}
+
+.main-banner .owl-nav .owl-next i {
+  right: auto;
+  left: 45px;
+}
+
+/* --- 4. Featured Section --- */
+
+.featured .left-image img {
+  padding-left: 0;
+  padding-right: 55px;
+}
+
+.featured .left-image a {
+  left: auto;
+  right: 0;
+}
+
+.featured .section-heading {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.featured .accordion {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.featured .info-table ul li img {
+  float: right;
+  margin-right: 0;
+  margin-left: 25px;
+}
+
+/* --- 5. Best Deal Section --- */
+
+.best-deal .tabs-content ul.nav-tabs {
+  justify-content: flex-end; /* Moves tabs to the left in RTL */
+}
+
+.best-deal .tabs-content ul.nav-tabs li {
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+.best-deal .info-table ul li {
+  text-align: right; /* Align text to the right */
+}
+
+.best-deal .info-table ul li span {
+  float: left; /* Float value to the left */
+}
+
+/* RTL fix for Icon Button */
+.icon-button a {
+  padding: 0px 0px 0px 30px;
+}
+
+.icon-button a i {
+  margin-right: 15px;
+  margin-left: -1px;
+}
+
+/* Align text in the description column to the right */
+.best-deal .tabs-content .col-lg-3 h4,
+.best-deal .tabs-content .col-lg-3 p {
+    text-align: right;
+}
+
+
+/* --- 6. Properties Section --- */
+
+.properties .item ul li {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+.properties .item h6 {
+  float: left;
+}
+
+/* --- 7. Contact Section --- */
+
+.contact-content .phone {
+  margin-right: 0;
+  margin-left: 15px;
+}
+
+.contact-content .email {
+  margin-left: 0;
+  margin-right: 15px;
+}
+
+.contact-content .item img {
+  float: right;
+  margin-right: 0;
+  margin-left: 25px;
+}
+
+.contact-content #contact-form {
+  margin-left: 0;
+  margin-right: 30px;
+}
+
+/* --- 8. Page Specifics --- */
+
+/* Properties Page */
+.properties ul.properties-filter li {
+    margin: 5px;
+}
+
+/* Single Property Page */
+.single-property .info-table {
+  margin-left: 0;
+  margin-right: 60px;
+}
+
+.single-property .info-table ul li {
+    text-align: right;
+}
+
+.single-property .info-table ul li img {
+  float: right;
+  margin-right: 0;
+  margin-left: 25px;
+}
+
+/* Contact Page */
+.contact-page .item img {
+  float: right;
+  margin-right: 0;
+  margin-left: 25px;
+}
+
+.contact-page #contact-form {
+  margin-left: 0;
+  margin-right: 30px;
+}
+
+/* --- 9. Responsive Adjustments --- */
+
+@media (max-width: 992px) {
+  .best-deal .tabs-content ul.nav-tabs {
+    justify-content: center;
+  }
+  .best-deal .info-table ul li span {
+    float: left !important;
+  }
+  .contact-content .phone {
+    margin-left: 0;
+  }
+  .contact-content #contact-form {
+    margin-right: 0;
+  }
+  .single-property .info-table {
+    margin-right: 0px;
+  }
+  .contact-page #contact-form {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-area .main-nav .logo {
+    right: 30px;
+    left: auto;
+  }
+}

@@ -1,0 +1,82 @@
+﻿@page
+@model VillaAgency.Web.Pages.Admin.Users.RegisterModel
+@{
+    ViewData["Title"] = "افزودن کاربر جدید";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>افزودن کاربر/مشاور جدید</h3>
+                <span class="breadcrumb"><a asp-page="/Admin/Users/Index">مدیریت کاربران</a> / افزودن کاربر</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Input.FullName" class="control-label"></label>
+                        <input asp-for="Input.FullName" class="form-control" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Input.Email" class="control-label"></label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Input.PhoneNumber" class="control-label"></label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Input.Password" class="control-label"></label>
+                                <input asp-for="Input.Password" class="form-control" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Input.ConfirmPassword" class="control-label"></label>
+                                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Input.SelectedRole" class="control-label">نقش کاربر</label>
+                        <select asp-for="Input.SelectedRole" class="form-select" asp-items="Model.RoleList">
+                            <option value="">-- انتخاب نقش --</option>
+                        </select>
+                        <span asp-validation-for="Input.SelectedRole" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Input.ProfileImage" class="control-label">عکس پروفایل (اختیاری)</label>
+                        <input asp-for="Input.ProfileImage" class="form-control" type="file" />
+                        <span asp-validation-for="Input.ProfileImage" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-success">ایجاد کاربر</button>
+                        <a asp-page="Index" class="btn btn-secondary">بازگشت به لیست</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

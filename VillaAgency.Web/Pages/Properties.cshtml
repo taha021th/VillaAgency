@@ -1,0 +1,172 @@
+﻿@page
+@model VillaAgency.Web.Pages.PropertiesModel
+@{
+    ViewData["Title"] = "لیست املاک";
+}
+
+<!-- 2. سپس، محتوای فایل Pages/Properties.cshtml را با کد زیر جایگزین کنید -->
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="breadcrumb"><a asp-page="/Index">خانه</a> / املاک</span>
+                <h3>املاک</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section properties" style="background-color: #fff;">
+    <div class="container">
+        <!-- فرم فیلتر پیشرفته -->
+        <div class="row mb-5">
+            <div class="col-lg-12">
+                <form id="advanced-filter-form" class="p-4 rounded" style="background-color: #f9f9f9;" method="get">
+                    <!-- فیلدهای فیلتر بدون تغییر باقی می‌مانند -->
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 mb-2">
+                            <label asp-for="SearchTerm" class="form-label">جستجو در املاک</label>
+                            <input asp-for="SearchTerm" class="form-control" placeholder="مثلا: ویلای استخردار، نزدیک مرکز شهر...">
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <label asp-for="CategoryId" class="form-label">دسته‌بندی</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryList">
+                                <option value="">همه</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <label asp-for="MinPrice" class="form-label">حداقل قیمت</label>
+                            <input asp-for="MinPrice" class="form-control" placeholder="تومان">
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <label asp-for="MaxPrice" class="form-label">حداکثر قیمت</label>
+                            <input asp-for="MaxPrice" class="form-control" placeholder="تومان">
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <label asp-for="MinArea" class="form-label">حداقل متراژ</label>
+                            <input asp-for="MinArea" class="form-control" placeholder="متر مربع">
+                        </div>
+                        <div class="col-md-6 col-lg-2">
+                            <label asp-for="MaxArea" class="form-label">حداکثر متراژ</label>
+                            <input asp-for="MaxArea" class="form-control" placeholder="متر مربع">
+                        </div>
+                        <div class="col-md-6 col-lg-2">
+                            <button type="submit" class="btn btn-primary w-100" style="background-color: #f35525; border-color: #f35525;">جستجو</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- بخش نمایش املاک -->
+        <div class="row properties-box">
+            @if (Model.Properties != null && Model.Properties.Any())
+            {
+                @foreach (var property in Model.Properties)
+                {
+                    <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items">
+                        <div class="item">
+                            <a asp-page="/PropertyDetails" asp-route-id="@property.Id">
+                                <img src="@(property.ImageUrls != null && property.ImageUrls.Any() ? property.ImageUrls.First() : "property-01.jpg")" alt="تصویر ملک: @property.Title">
+                            </a>
+                            <span class="category">@property.CategoryName</span>
+                            <h6>@property.Price.ToString("N0") تومان</h6>
+                            <h4><a asp-page="/PropertyDetails" asp-route-id="@property.Id">@property.Title</a></h4>
+                            <ul>
+                                <li>اتاق خواب: <span>@property.Bedrooms</span></li>
+                                <li>مساحت: <span>@property.Area متر مربع</span></li>
+                            </ul>
+                            <div class="main-button">
+                                <a asp-page="/PropertyDetails" asp-route-id="@property.Id">رزرو بازدید</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p class="text-center">هیچ ملکی با این مشخصات یافت نشد.</p>
+                </div>
+            }
+        </div>
+
+        <!-- بخش صفحه‌بندی هوشمند -->
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="pagination">
+                    @{
+                        // تعیین محدوده صفحاتی که نمایش داده می‌شوند (مثلاً 2 صفحه قبل و 2 صفحه بعد)
+                        int startPage = Math.Max(1, Model.CurrentPage - 2);
+                        int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+
+                        // اگر در صفحات ابتدایی هستیم، مطمئن شو که 5 دکمه نمایش داده می‌شود (در صورت وجود)
+                        if (startPage <= 2) endPage = Math.Min(Model.TotalPages, 5);
+                        // اگر در صفحات انتهایی هستیم، مطمئن شو که 5 دکمه نمایش داده می‌شود (در صورت وجود)
+                        if (endPage >= Model.TotalPages - 2) startPage = Math.Max(1, Model.TotalPages - 4);
+                    }
+
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li>
+                            <a asp-page="/Properties" asp-route-CurrentPage="@(Model.CurrentPage - 1)"
+                               asp-route-SearchTerm="@Model.SearchTerm" asp-route-CategoryId="@Model.CategoryId"
+                               asp-route-MinPrice="@Model.MinPrice" asp-route-MaxPrice="@Model.MaxPrice"
+                               asp-route-MinArea="@Model.MinArea" asp-route-MaxArea="@Model.MaxArea">&lt;&lt;</a>
+                        </li>
+                    }
+
+                    @if (startPage > 1)
+                    {
+                        <li>
+                            <a asp-page="/Properties" asp-route-CurrentPage="1"
+                               asp-route-SearchTerm="@Model.SearchTerm" asp-route-CategoryId="@Model.CategoryId"
+                               asp-route-MinPrice="@Model.MinPrice" asp-route-MaxPrice="@Model.MaxPrice"
+                               asp-route-MinArea="@Model.MinArea" asp-route-MaxArea="@Model.MaxArea">1</a>
+                        </li>
+                        @if (startPage > 2)
+                        {
+                            <li><span>...</span></li>
+                        }
+                    }
+
+                    @for (var i = startPage; i <= endPage; i++)
+                    {
+                        <li>
+                            <a class="@(i == Model.CurrentPage ? "is_active" : "")"
+                               asp-page="/Properties" asp-route-CurrentPage="@i"
+                               asp-route-SearchTerm="@Model.SearchTerm" asp-route-CategoryId="@Model.CategoryId"
+                               asp-route-MinPrice="@Model.MinPrice" asp-route-MaxPrice="@Model.MaxPrice"
+                               asp-route-MinArea="@Model.MinArea" asp-route-MaxArea="@Model.MaxArea">@i</a>
+                        </li>
+                    }
+
+                    @if (endPage < Model.TotalPages)
+                    {
+                        @if (endPage < Model.TotalPages - 1)
+                        {
+                            <li><span>...</span></li>
+                        }
+                        <li>
+                            <a asp-page="/Properties" asp-route-CurrentPage="@Model.TotalPages"
+                               asp-route-SearchTerm="@Model.SearchTerm" asp-route-CategoryId="@Model.CategoryId"
+                               asp-route-MinPrice="@Model.MinPrice" asp-route-MaxPrice="@Model.MaxPrice"
+                               asp-route-MinArea="@Model.MinArea" asp-route-MaxArea="@Model.MaxArea">@Model.TotalPages</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li>
+                            <a asp-page="/Properties" asp-route-CurrentPage="@(Model.CurrentPage + 1)"
+                               asp-route-SearchTerm="@Model.SearchTerm" asp-route-CategoryId="@Model.CategoryId"
+                               asp-route-MinPrice="@Model.MinPrice" asp-route-MaxPrice="@Model.MaxPrice"
+                               asp-route-MinArea="@Model.MinArea" asp-route-MaxArea="@Model.MaxArea">&gt;&gt;</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
