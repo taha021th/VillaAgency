@@ -26,6 +26,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var rediConnection = builder.Configuration.GetConnectionString("Redis");
+builder.Services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(sp =>
+{
+    return StackExchange.Redis.ConnectionMultiplexer.Connect(rediConnection);
+});
+
+
 var app = builder.Build();
 
 

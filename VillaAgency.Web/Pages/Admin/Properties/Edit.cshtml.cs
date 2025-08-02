@@ -16,12 +16,14 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         private readonly IMediator _mediator;
         private readonly IFileStorageService _fileStorageService;
         private readonly IVideoStorageService _videoStorageService;
+        private readonly ICacheService _cacheService;
 
-        public EditModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService)
+        public EditModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService, ICacheService cacheService)
         {
             _mediator = mediator;
             _fileStorageService = fileStorageService;
             _videoStorageService = videoStorageService;
+            _cacheService=cacheService;
         }
 
         [BindProperty]
@@ -124,6 +126,7 @@ namespace VillaAgency.Web.Pages.Admin.Properties
 
             // ۷. ارسال دستور نهایی برای آپدیت در دیتابیس
             await _mediator.Send(PropertyCommand);
+            await _cacheService.RemoveDataAsync("properties_first_page_list");
 
             return RedirectToPage("./Index");
         }

@@ -33,6 +33,8 @@ namespace VillaAgency.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IVisitRequestRepository, VisitRequestRepository>();
             services.AddScoped<IPropertySubmissionRepository, PropertySubmissionRepository>();
+            services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();
+            services.AddScoped<ICacheService, RedisCacheService>();
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
                 (

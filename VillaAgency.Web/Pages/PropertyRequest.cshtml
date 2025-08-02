@@ -1,0 +1,94 @@
+﻿@page
+@model VillaAgency.Web.Pages.PropertyRequestModel
+@{
+    ViewData["Title"] = "درخواست ملک";
+}
+
+<div class="page-heading header-text">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="breadcrumb"><a asp-page="/Index">خانه</a> / درخواست ملک</span>
+                <h3>ملک مورد نظرتان را به ما بسپارید</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-page section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="section-heading">
+                    <h6>| فرم درخواست ملک</h6>
+                    <h2>مشخصات ملک مورد نظر خود را وارد کنید</h2>
+                </div>
+                <form class="contact-form" method="post">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <h5 class="mb-3">۱. اطلاعات تماس و نوع درخواست</h5>
+                    <div class="row">
+                        <div class="col-lg-6"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-12 mt-3">
+                            <fieldset>
+                                <label>نوع معامله</label>
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید"><label class="form-check-label">خرید</label></div>
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره"><label class="form-check-label">رهن و اجاره</label></div>
+                                <span asp-validation-for="Input.TransactionType" class="text-danger d-block"></span>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۲. نوع و منطقه ملک</h5>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <label>نوع ملک (می‌توانید چند مورد انتخاب کنید)</label>
+                                <div class="mt-2">
+                                    @foreach (var category in Model.CategoryList)
+                                    {
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="Input.CategoryIds" value="@category.Id">
+                                            <label class="form-check-label">@category.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                                <span asp-validation-for="Input.CategoryIds" class="text-danger d-block"></span>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-12 mt-3"><fieldset><label asp-for="Input.DesiredRegions"></label><input asp-for="Input.DesiredRegions" class="form-control" placeholder="مثال: فاز ۱، فاز ۴، پردیسان"><span asp-validation-for="Input.DesiredRegions" class="text-danger"></span></fieldset></div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۳. مشخصات ملک مورد نظر</h5>
+                    <div class="row">
+                        <div class="col-lg-6"><fieldset><label asp-for="Input.MinBudget">از بودجه (تومان)</label><input asp-for="Input.MinBudget" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                        <div class="col-lg-6"><fieldset><label asp-for="Input.MaxBudget">تا بودجه (تومان)</label><input asp-for="Input.MaxBudget" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MinArea">از متراژ (متر)</label><input asp-for="Input.MinArea" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MaxArea">تا متراژ (متر)</label><input asp-for="Input.MaxArea" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MinBedrooms">حداقل تعداد خواب</label><input asp-for="Input.MinBedrooms" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3">۴. توضیحات تکمیلی</h5>
+                    <div class="row">
+                        <div class="col-lg-12"><fieldset><label asp-for="Input.Description"></label><textarea asp-for="Input.Description" class="form-control" style="min-height: 150px;" placeholder="ویژگی‌های خاص ملک مورد نظرتان را اینجا بنویسید... (اختیاری)"></textarea></fieldset></div>
+                        <div class="col-lg-12 mt-4">
+                            <fieldset>
+                                <button type="submit" class="main-button">ثبت و ارسال درخواست</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

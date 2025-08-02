@@ -24,5 +24,9 @@ namespace VillaAgency.Infrastructure
         public IMongoCollection<Category> Categories => _database.GetCollection<Category>("catories");
         public IMongoCollection<VisitRequest> VisitRequests => _database.GetCollection<VisitRequest>("visitRequests");
         public IMongoCollection<PropertySubmission> PropertySubmissions => _database.GetCollection<PropertySubmission>("propertySubmissions");
+        public IMongoCollection<PropertyRequest> PropertyRequests => _database.GetCollection<PropertyRequest>("propertyRequests");
+
+
+
     }
 }

@@ -1,0 +1,116 @@
+﻿@page
+@model VillaAgency.Web.Pages.Admin.PropertyRequests.IndexModel
+@{
+    ViewData["Title"] = "مدیریت درخواست‌های ملک";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4">لیست درخواست‌های ملک</h2>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>نام متقاضی</th>
+                            <th>شماره تماس</th>
+                            <th>نوع معامله</th>
+                            <th>تاریخ ثبت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model.PropertyRequests)
+                        {
+                            <tr>
+                                <td>@request.FullName</td>
+                                <td dir="ltr">@request.PhoneNumber</td>
+                                <td>@request.TransactionType</td>
+                                <td>@request.SubmittedAt.ToShortDateString()</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info"
+                                            data-bs-toggle="modal" data-bs-target="#reportModal"
+                                            data-request-id="@request.Id"
+                                            data-reports='@System.Text.Json.JsonSerializer.Serialize(request.Reports)'>
+                                        مدیریت گزارش‌ها (@request.Reports.Count)
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav><ul class="pagination justify-content-center mt-4">...</ul></nav>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">مدیریت گزارش‌ها</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>گزارش‌های ثبت شده</h6>
+                <div id="previous-reports" class="mb-4" style="max-height: 200px; overflow-y: auto;">
+                    <p>هیچ گزارشی ثبت نشده است.</p>
+                </div>
+                <hr />
+                <h6>افزودن گزارش جدید</h6>
+                <form method="post" asp-page-handler="AddReport">
+                    <input type="hidden" id="modalRequestId" asp-for="AddReportCommand.RequestId" />
+                    <div class="mb-3">
+                        <label asp-for="AddReportCommand.Content" class="form-label">جزئیات تماس</label>
+                        <textarea asp-for="AddReportCommand.Content" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">ثبت گزارش</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // اسکریپت دقیقا مشابه صفحه VisitRequests
+        var reportModal = document.getElementById('reportModal');
+        reportModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var requestId = button.getAttribute('data-request-id');
+            var reportsJson = button.getAttribute('data-reports');
+            var reports = JSON.parse(reportsJson);
+
+            var modalRequestIdInput = reportModal.querySelector('#modalRequestId');
+            var previousReportsDiv = reportModal.querySelector('#previous-reports');
+
+            modalRequestIdInput.value = requestId;
+            previousReportsDiv.innerHTML = ''; // Clear previous content
+
+            if (reports && reports.length > 0) {
+                reports.forEach(function (report) {
+                    var reportDate = new Date(report.ReportDate).toLocaleString('fa-IR');
+                    var reportElement = document.createElement('div');
+                    reportElement.className = 'border-bottom pb-2 mb-2';
+                    reportElement.innerHTML = `<p class="mb-1">${report.Content}</p><small class="text-muted">توسط: ${report.AgentName} در ${reportDate}</small>`;
+                    previousReportsDiv.appendChild(reportElement);
+                });
+            } else {
+                previousReportsDiv.innerHTML = '<p class="text-muted">هیچ گزارشی ثبت نشده است.</p>';
+            }
+        });
+    </script>
+}

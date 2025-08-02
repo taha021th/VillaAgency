@@ -13,5 +13,7 @@ namespace VillaAgency.Application.Common.Interfaces
         IMongoCollection<Category> Categories { get; }
         IMongoCollection<VisitRequest> VisitRequests { get; }
         IMongoCollection<PropertySubmission> PropertySubmissions { get; }
+        IMongoCollection<PropertyRequest> PropertyRequests { get; }
+
     }
 }

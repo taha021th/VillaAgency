@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using VillaAgency.Application.Common.Interfaces.Services;
 using VillaAgency.Application.Handlers.Properties.Commands;
 using VillaAgency.Application.Handlers.Properties.Queries;
 using VillaAgency.Domain.Entities;
@@ -13,11 +14,13 @@ namespace VillaAgency.Web.Pages.Admin.Properties
     {
         private readonly IMediator _mediator;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ICacheService _cacheService;
 
-        public DeleteModel(IMediator mediator, IWebHostEnvironment webHostEnvironment)
+        public DeleteModel(IMediator mediator, IWebHostEnvironment webHostEnvironment, ICacheService cacheService)
         {
             _mediator = mediator;
             _webHostEnvironment = webHostEnvironment;
+            _cacheService=cacheService;
         }
 
         [BindProperty]
@@ -62,6 +65,7 @@ namespace VillaAgency.Web.Pages.Admin.Properties
 
             // ارسال Command به MediatR برای حذف ملک از دیتابیس
             await _mediator.Send(new DeletePropertyCommand(Property.Id));
+            await _cacheService.RemoveDataAsync("properties_first_page_list");
 
             return RedirectToPage("./Index");
             // --- پایان تغییر ---

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using VillaAgency.Application.Common.Interfaces.Services; // 👈 اضافه شد
+using VillaAgency.Application.Common.Interfaces.Services;
 using VillaAgency.Application.Handlers.Categories.Queries;
 using VillaAgency.Application.Handlers.Properties.Commands;
 using VillaAgency.Application.Handlers.PropertySubmissions.Queries;
@@ -14,14 +14,16 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
     public class CreateModel : PageModel
     {
         private readonly IMediator _mediator;
-        private readonly IFileStorageService _fileStorageService; // 👈 اضافه شد
-        private readonly IVideoStorageService _videoStorageService; // 👈 اضافه شد
+        private readonly IFileStorageService _fileStorageService;
+        private readonly IVideoStorageService _videoStorageService;
+        private readonly ICacheService _cacheService;
 
-        public CreateModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService)
+        public CreateModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService, ICacheService cacheService)
         {
             _mediator = mediator;
-            _fileStorageService = fileStorageService; // 👈 اضافه شد
-            _videoStorageService = videoStorageService; // 👈 اضافه شد
+            _fileStorageService = fileStorageService;
+            _videoStorageService = videoStorageService;
+            _cacheService=cacheService;
         }
 
         [BindProperty]
@@ -45,7 +47,7 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                 var submission = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
                 if (submission != null)
                 {
-                    // پر کردن فیلدهای متنی فرم
+
                     CreatePropertyCommand.Title = submission.Title;
                     CreatePropertyCommand.Description = submission.Description;
                     CreatePropertyCommand.Address = submission.Address;
@@ -59,7 +61,7 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                     CreatePropertyCommand.BuildDate = submission.BuildDate;
                     CreatePropertyCommand.CategoryId = submission.CategoryId;
 
-                    // پر کردن لیست URL ها برای نمایش در View
+
                     SubmittedImageUrls = submission.ImageUrls ?? new List<string>();
                     SubmittedVideoUrls = submission.VideoUrls ?? new List<string>();
                 }
@@ -71,7 +73,7 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
             if (!ModelState.IsValid)
             {
                 await LoadCategoryList();
-                // اگر مدل نامعتبر بود، باید دوباره لیست عکس‌ها را برای نمایش پر کنیم
+
                 var submissionOnErr = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
                 if (submissionOnErr != null)
                 {
@@ -81,11 +83,11 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                 return Page();
             }
 
-            // واکشی اطلاعات اصلی درخواست برای مقایسه و حذف فایل
+
             var originalSubmission = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
             if (originalSubmission != null)
             {
-                // شناسایی و حذف تصاویر اضافی
+
                 var originalImageUrls = originalSubmission.ImageUrls ?? new List<string>();
                 var submittedImageUrls = CreatePropertyCommand.ImageUrls ?? new List<string>();
                 var imagesToDelete = originalImageUrls.Except(submittedImageUrls).ToList();
@@ -94,7 +96,7 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                     await _fileStorageService.DeleteFileAsync(Path.GetFileName(imageUrl), "images");
                 }
 
-                // شناسایی و حذف ویدئوهای اضافی
+
                 var originalVideoUrls = originalSubmission.VideoUrls ?? new List<string>();
                 var submittedVideoUrls = CreatePropertyCommand.VideoUrls ?? new List<string>();
                 var videosToDelete = originalVideoUrls.Except(submittedVideoUrls).ToList();
@@ -105,10 +107,9 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
             }
 
             await _mediator.Send(CreatePropertyCommand);
+            await _cacheService.RemoveDataAsync("properties_first_page_list");
             TempData["success"] = "ملک با موفقیت از روی درخواست ثبت شد.";
 
-            // اینجا باید درخواست (Submission) را هم از دیتابیس حذف یا وضعیت آن را تغییر دهید
-            // (این بخش به منطق برنامه شما بستگی دارد)
 
             return RedirectToPage("/Admin/Properties/Index");
         }

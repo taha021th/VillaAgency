@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +18,14 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFileStorageService _fileStorageService;
         private readonly IVideoStorageService _videoStorageService;
-        public CreateModel(IMediator mediator, UserManager<ApplicationUser> userManager, IFileStorageService fileStorageService, IVideoStorageService videoStorageService)
+        private readonly ICacheService _cacheService;
+        public CreateModel(IMediator mediator, UserManager<ApplicationUser> userManager, IFileStorageService fileStorageService, IVideoStorageService videoStorageService, ICacheService cacheService)
         {
             _mediator = mediator;
             _userManager = userManager;
             _fileStorageService = fileStorageService;
             _videoStorageService = videoStorageService;
+            _cacheService=cacheService;
         }
 
         [BindProperty]
@@ -80,6 +82,9 @@ namespace VillaAgency.Web.Pages.Admin.Properties
                 PropertyCommand.VideoUrls = new List<string>();
             }
             await _mediator.Send(PropertyCommand);
+
+            await _cacheService.RemoveDataAsync("properties_first_page_list");
+
             return RedirectToPage("./Index");
         }
     }
