@@ -27,11 +27,9 @@
                         <h5>رسانه‌های فعلی</h5>
                         <div id="current-media-gallery" class="row g-2">
                             @if (Model.PropertyCommand.ImageUrls != null && Model.PropertyCommand.ImageUrls.Any())
-
                             {
                                 <div class="col-12"><p class="mt-3 mb-2 text-muted">تصاویر:</p></div>
                                 @foreach (var imageUrl in Model.PropertyCommand.ImageUrls)
-
                                 {
                                     <div class="col-md-3 media-container">
                                         <input type="hidden" name="PropertyCommand.ImageUrls" value="@imageUrl" />
@@ -43,11 +41,9 @@
                                 }
                             }
                             @if (Model.PropertyCommand.VideoUrls != null && Model.PropertyCommand.VideoUrls.Any())
-
                             {
                                 <div class="col-12"><p class="mt-3 mb-2 text-muted">ویدئوها:</p></div>
                                 @foreach (var videoUrl in Model.PropertyCommand.VideoUrls)
-
                                 {
                                     <div class="col-md-4 media-container">
                                         <input type="hidden" name="PropertyCommand.VideoUrls" value="@videoUrl" />
@@ -62,7 +58,14 @@
                     </div>
                     <hr />
 
-                    <div class="form-group mb-3"><label asp-for="PropertyCommand.CategoryId" class="control-label">دسته‌بندی</label><select asp-for="PropertyCommand.CategoryId" class="form-control" asp-items="Model.CategoryList"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="PropertyCommand.CategoryId" class="text-danger"></span></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3"><label asp-for="PropertyCommand.CategoryId" class="control-label">دسته‌بندی</label><select asp-for="PropertyCommand.CategoryId" class="form-control form-select" asp-items="Model.CategoryList"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="PropertyCommand.CategoryId" class="text-danger"></span></div>
+                        </div>                        
+                    </div>
+
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.FullName" class="control-label"></label><input asp-for="PropertyCommand.FullName" class="form-control" /></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.PhoneNumber" class="control-label"></label><input asp-for="PropertyCommand.PhoneNumber" class="form-control" /></div>
                     <div class="form-group mb-3"><label asp-for="PropertyCommand.Title" class="control-label"></label><input asp-for="PropertyCommand.Title" class="form-control" /></div>
                     <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Price"></label><input asp-for="PropertyCommand.Price" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Area"></label><input asp-for="PropertyCommand.Area" class="form-control" /></div></div></div>
                     <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Bedrooms"></label><input asp-for="PropertyCommand.Bedrooms" class="form-control" /></div></div></div>
@@ -71,7 +74,14 @@
                     <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Floor"></label><input asp-for="PropertyCommand.Floor" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.FloorsCount"></label><input asp-for="PropertyCommand.FloorsCount" class="form-control" /></div></div></div>
                     <div class="row"><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.UnitsCountInFloor"></label><input asp-for="PropertyCommand.UnitsCountInFloor" class="form-control" /></div></div><div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Unit"></label><input asp-for="PropertyCommand.Unit" class="form-control" /></div></div></div>
                     <div class="form-group mb-3"><label asp-for="PropertyCommand.BuildDate"></label><input asp-for="PropertyCommand.BuildDate" id="buildDatePicker" class="form-control" /></div>
-
+                    <div class="col-lg-12 mt-3">
+                        <fieldset>
+                            <label class="mb-3">نوع معامله</label>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="PropertyCommand.TransactionType" value="خرید و فروش" id="buyRadio"><label for="buyRadio" class="form-check-label">خرید و فروش</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="PropertyCommand.TransactionType" value="رهن و اجاره" id="rentRadio"><label for="rentRadio" class="form-check-label">رهن و اجاره</label></div>
+                            <span asp-validation-for="PropertyCommand.TransactionType" class="text-danger d-block mt-2"></span>
+                        </fieldset>
+                    </div>
                     <div class="form-group mb-3">
                         <label asp-for="NewImageFiles" class="control-label">افزودن تصاویر جدید</label>
                         <input asp-for="NewImageFiles" class="form-control" type="file" multiple />
@@ -100,7 +110,6 @@
     <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
 
     <script type="text/javascript">
-        // 🚀 تابع جدید برای حذف مدیا از صفحه
         function deleteMedia(button) {
             const mediaContainer = button.closest('.media-container');
             if (mediaContainer) {

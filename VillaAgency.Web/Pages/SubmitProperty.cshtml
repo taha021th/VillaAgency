@@ -4,11 +4,185 @@
     ViewData["Title"] = "سپردن ملک";
 }
 
+@* استایل‌های سفارشی برای طراحی جدید فرم *@
+<style>
+    .request-form-container {
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: -50px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* استایل مراحل (Steps) */
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #eee;
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        padding: 0 15px;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #f2f2f2;
+        color: #aaa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 22px;
+        border: 2px solid #eee;
+        transition: all 0.3s ease;
+    }
+
+    .step-title {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #888;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .step.active .step-icon,
+    .step.completed .step-icon {
+        background-color: #f35525;
+        color: #fff;
+        border-color: #f35525;
+    }
+
+    .step.completed .step-icon {
+        background-color: #1e9e1e;
+        border-color: #1e9e1e;
+    }
+
+    .step.active .step-title {
+        color: #f35525;
+        font-weight: 700;
+    }
+
+    .step.completed .step-title {
+        color: #1e9e1e;
+    }
+
+    /* استایل اینپوت‌ها */
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        height: auto;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #f35525;
+            box-shadow: 0 0 0 0.2rem rgba(243, 85, 37, 0.25);
+        }
+
+    label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* استایل دکمه‌های رادیویی */
+    .form-check-inline .form-check-input {
+        display: none;
+    }
+
+    .form-check-inline .form-check-label {
+        background-color: #f2f2f2;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        font-weight: 500;
+    }
+
+    .form-check-inline .form-check-input:checked + .form-check-label {
+        background-color: #f35525;
+        color: #fff;
+        border-color: #f35525;
+    }
+
+    /* استایل دکمه‌های ناوبری */
+    .form-navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .main-button, .secondary-button {
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 30px;
+        border: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .main-button {
+        background-color: #f35525;
+    }
+
+    .secondary-button {
+        background-color: #6c757d;
+    }
+
+    .main-button:hover {
+        background-color: #d94315;
+    }
+
+    /* استایل تب‌ها */
+    .tab-pane {
+        display: none;
+        animation: fadeIn 0.5s;
+    }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 <div class="page-heading header-text">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <span class="breadcrumb"><a href="/">خانه</a> / سپردن ملک</span>
+                <span class="breadcrumb"><a asp-page="/Index">خانه</a> / سپردن ملک</span>
                 <h3>ملک خود را به ما بسپارید</h3>
             </div>
         </div>
@@ -17,89 +191,117 @@
 
 <div class="contact-page section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="section-heading">
-                    <h6>| فرم سپردن ملک</h6>
-                    <h2>اطلاعات ملک خود را با دقت وارد کنید</h2>
-                </div>
-                <form class="contact-form" method="post" enctype="multipart/form-data">
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success" role="alert">
-                            @TempData["SuccessMessage"]
-                        </div>
-                    }
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-lg-10 mx-auto request-form-container">
+            <form id="submitPropertyForm" method="post" enctype="multipart/form-data">
 
-                    <!-- ... سایر بخش‌های فرم ... -->
-                    <h5 class="mb-3">۱. اطلاعات مالک و نوع معامله</h5>
-                    <div class="row">
-                        <div class="col-lg-4"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control" placeholder="مثال: علی رضایی"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-4"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control" placeholder="مثال: 09123456789"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-4"><fieldset><label asp-for="Input.TransactionType"></label><div class="form-check form-check-inline mt-2"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید و فروش"><label class="form-check-label">خرید و فروش</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره"><label class="form-check-label">رهن و اجاره</label></div><span asp-validation-for="Input.TransactionType" class="text-danger d-block"></span></fieldset></div>
+                <div class="step-indicator">
+                    <div class="step active" data-step="1">
+                        <div class="step-icon"><i class="fa fa-user-circle"></i></div>
+                        <div class="step-title">اطلاعات مالک</div>
                     </div>
+                    <div class="step" data-step="2">
+                        <div class="step-icon"><i class="fa fa-home"></i></div>
+                        <div class="step-title">اطلاعات اصلی</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-icon"><i class="fa fa-cogs"></i></div>
+                        <div class="step-title">مشخصات فنی</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-icon"><i class="fa fa-camera"></i></div>
+                        <div class="step-title">توضیحات و رسانه</div>
+                    </div>
+                </div>
 
-                    <hr class="my-4">
-                    <h5 class="mb-3">۲. اطلاعات اصلی ملک</h5>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="tab-pane active" id="step1">
+                    <h5 class="mb-4 text-center">۱. اطلاعات مالک و نوع معامله</h5>
                     <div class="row">
-                        <div class="col-lg-8"><fieldset><label asp-for="Input.Title"></label><input asp-for="Input.Title" class="form-control" placeholder="مثال: آپارتمان ۱۲۰ متری در فاز ۲"><span asp-validation-for="Input.Title" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-4"><fieldset><label asp-for="Input.Price"></label><input asp-for="Input.Price" type="number" class="form-control" placeholder="به تومان"><span asp-validation-for="Input.Price" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control" placeholder="مثال: علی رضایی"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control" placeholder="مثال: 09123456789"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-12 mt-3">
+                            <fieldset>
+                                <label class="mb-3" asp-for="Input.TransactionType"></label>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید و فروش" id="buySaleRadio"><label for="buySaleRadio" class="form-check-label">خرید و فروش</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره" id="rentRadio"><label for="rentRadio" class="form-check-label">رهن و اجاره</label></div>
+                                </div>
+                                <span asp-validation-for="Input.TransactionType" class="text-danger d-block text-center mt-2"></span>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="form-navigation-buttons">
+                        <span></span> <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="step2">
+                    <h5 class="mb-4 text-center">۲. اطلاعات اصلی ملک</h5>
+                    <div class="row">
+                        <div class="col-lg-8 mb-3"><fieldset><label asp-for="Input.Title"></label><input asp-for="Input.Title" class="form-control" placeholder="مثال: آپارتمان ۱۲۰ متری در فاز ۲"><span asp-validation-for="Input.Title" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 mb-3"><fieldset><label asp-for="Input.Price"></label><input asp-for="Input.Price" type="number" class="form-control" placeholder="به تومان"><span asp-validation-for="Input.Price" class="text-danger"></span></fieldset></div>
                         <div class="col-lg-12"><fieldset><label asp-for="Input.Address"></label><input asp-for="Input.Address" class="form-control" placeholder="آدرس کامل ملک را وارد کنید"><span asp-validation-for="Input.Address" class="text-danger"></span></fieldset></div>
                     </div>
-
-                    <hr class="my-4">
-                    <h5 class="mb-3">۳. مشخصات فنی ملک</h5>
-                    <div class="row">
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.Area"></label><input asp-for="Input.Area" type="number" class="form-control" placeholder="متر مربع"><span asp-validation-for="Input.Area" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.Bedrooms"></label><input asp-for="Input.Bedrooms" type="number" class="form-control" placeholder="تعداد"><span asp-validation-for="Input.Bedrooms" class="text-danger"></span></fieldset></div>
-
-                        <div class="col-lg-3"><fieldset>
-                            <label asp-for="Input.BuildDate"></label>
-                                <input asp-for="Input.BuildDate"  class="form-control" id="buildDatePicker" autocomplete="off" placeholder="مثال: 1403/1/1">
-                                
-                                <span asp-validation-for="Input.BuildDate" class="text-danger"></span>
-                        </fieldset></div>
-
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.Floor"></label><input asp-for="Input.Floor" type="number" class="form-control" placeholder="شماره طبقه"><span asp-validation-for="Input.Floor" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.FloorsCount"></label><input asp-for="Input.FloorsCount" type="number" class="form-control" placeholder="تعداد کل"><span asp-validation-for="Input.FloorsCount" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.Unit"></label><input asp-for="Input.Unit" type="number" class="form-control" placeholder="شماره واحد"><span asp-validation-for="Input.Unit" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.UnitsCountInFloor"></label><input asp-for="Input.UnitsCountInFloor" type="number" class="form-control" placeholder="تعداد در طبقه"><span asp-validation-for="Input.UnitsCountInFloor" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-3"><fieldset><label asp-for="Input.CategoryId"></label><select asp-for="Input.CategoryId" asp-items="Model.CategoryList" class="form-select"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="Input.CategoryId" class="text-danger"></span></fieldset></div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
                     </div>
+                </div>
 
-                    <hr class="my-4">
-                    <h5 class="mb-3">۴. توضیحات و رسانه</h5>
+                <div class="tab-pane" id="step3">
+                    <h5 class="mb-4 text-center">۳. مشخصات فنی ملک</h5>
                     <div class="row">
-                        <div class="col-lg-12"><fieldset><label asp-for="Input.Description"></label><textarea asp-for="Input.Description" class="form-control" style="min-height: 150px;" placeholder="امکانات، ویژگی‌های خاص، شرایط و ..."></textarea><span asp-validation-for="Input.Description" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.Area"></label><input asp-for="Input.Area" type="number" class="form-control" placeholder="متر مربع"><span asp-validation-for="Input.Area" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.Bedrooms"></label><input asp-for="Input.Bedrooms" type="number" class="form-control" placeholder="تعداد"><span asp-validation-for="Input.Bedrooms" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.BuildDate"></label><input asp-for="Input.BuildDate" class="form-control" id="buildDatePicker" autocomplete="off" placeholder="سال/ماه/روز"><span asp-validation-for="Input.BuildDate" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.Floor"></label><input asp-for="Input.Floor" type="number" class="form-control" placeholder="شماره طبقه"><span asp-validation-for="Input.Floor" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.FloorsCount"></label><input asp-for="Input.FloorsCount" type="number" class="form-control" placeholder="تعداد کل"><span asp-validation-for="Input.FloorsCount" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-4 col-md-6 mb-3"><fieldset><label asp-for="Input.Unit"></label><input asp-for="Input.Unit" type="number" class="form-control" placeholder="شماره واحد"><span asp-validation-for="Input.Unit" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 col-md-6 mb-3"><fieldset><label asp-for="Input.UnitsCountInFloor"></label><input asp-for="Input.UnitsCountInFloor" type="number" class="form-control" placeholder="تعداد در طبقه"><span asp-validation-for="Input.UnitsCountInFloor" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 col-md-12 mb-3"><fieldset><label asp-for="Input.CategoryId"></label><select asp-for="Input.CategoryId" asp-items="Model.CategoryList" class="form-select"><option value="">-- انتخاب کنید --</option></select><span asp-validation-for="Input.CategoryId" class="text-danger"></span></fieldset></div>
+                    </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
+                    </div>
+                </div>
 
-                        <div class="col-lg-6 mt-3">
+                <div class="tab-pane" id="step4">
+                    <h5 class="mb-4 text-center">۴. توضیحات و رسانه</h5>
+                    <div class="row">
+                        <div class="col-lg-12 mb-4"><fieldset><label asp-for="Input.Description"></label><textarea asp-for="Input.Description" class="form-control" style="min-height: 120px;" placeholder="امکانات، ویژگی‌های خاص، شرایط و ..."></textarea><span asp-validation-for="Input.Description" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3">
                             <fieldset>
                                 <label asp-for="Input.ImageFiles">تصاویر ملک (امکان انتخاب چند فایل)</label>
                                 <input asp-for="Input.ImageFiles" type="file" multiple class="form-control" accept="image/*">
                                 <span asp-validation-for="Input.ImageFiles" class="text-danger"></span>
                             </fieldset>
                         </div>
-                        <div class="col-lg-6 mt-3">
+                        <div class="col-lg-6 mb-3">
                             <fieldset>
-                                <!-- **اصلاح شد:** امکان انتخاب چند فایل ویدئو فراهم شد -->
                                 <label asp-for="Input.VideoFiles">ویدئوهای معرفی ملک (امکان انتخاب چند فایل)</label>
                                 <input asp-for="Input.VideoFiles" type="file" multiple class="form-control" accept="video/mp4,video/x-m4v,video/*">
                                 <span asp-validation-for="Input.VideoFiles" class="text-danger"></span>
                             </fieldset>
                         </div>
-
-                        <div class="col-lg-12 mt-4">
-                            <fieldset>
-                                <button type="submit" class="main-button">ثبت و ارسال اطلاعات ملک</button>
-                            </fieldset>
-                        </div>
                     </div>
-                </form>
-            </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="submit" class="main-button" style="background-color: #1e9e1e;">ثبت و ارسال اطلاعات <i class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -109,18 +311,57 @@
     <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
 
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function() {
-
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Date Picker
             kamaDatepicker('buildDatePicker', {
-        forceDigits: 'en',
-        buttonsColor: "blue",
-        markToday: true,
-        gotoToday: true,
-        autoClose: true,
-        placeholder: "سال/ماه/روز",
-        format: "YYYY/MM/DD"
-        });
+                forceDigits: 'fa', // نمایش اعداد فارسی
+                buttonsColor: "blue",
+                markToday: true,
+                gotoToday: true,
+                autoClose: true,
+                placeholder: "سال/ماه/روز",
+                format: "YYYY/MM/DD"
+            });
 
+            // Wizard Navigation Logic
+            let currentStep = 1;
+            const steps = document.querySelectorAll('.step');
+            const panes = document.querySelectorAll('.tab-pane');
+
+            function showStep(stepNumber) {
+                panes.forEach(pane => pane.classList.remove('active'));
+                document.querySelector('#step' + stepNumber).classList.add('active');
+
+                steps.forEach(step => {
+                    const stepData = parseInt(step.dataset.step);
+                    step.classList.remove('active', 'completed');
+                    if (stepData < stepNumber) {
+                        step.classList.add('completed');
+                    } else if (stepData === stepNumber) {
+                        step.classList.add('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.next-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (currentStep < 4) {
+                        currentStep++;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.prev-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            showStep(currentStep); // Initialize first step
         });
     </script>
 }

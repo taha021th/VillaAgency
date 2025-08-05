@@ -114,6 +114,14 @@ public class PropertyRepository : IPropertyRepository
         return (properties, (int)totalCount);
     }
 
+    public async Task<IEnumerable<Property?>> FindAsync(Expression<Func<Property, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _context.Properties.Find(predicate).ToListAsync(cancellationToken);
+    }
 
+    public async Task<Property?> FindOneAsync(Expression<Func<Property, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _context.Properties.Find(predicate).FirstOrDefaultAsync(cancellationToken);
+    }
 }
 

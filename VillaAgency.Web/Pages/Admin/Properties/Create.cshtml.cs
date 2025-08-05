@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using VillaAgency.Application.Common.Interfaces.Services;
 using VillaAgency.Application.Handlers.Categories.Queries;
 using VillaAgency.Application.Handlers.Properties.Commands;
+using VillaAgency.Domain.Entities.Enums;
 using VillaAgency.Domain.Entities.Users;
 
 namespace VillaAgency.Web.Pages.Admin.Properties
@@ -31,6 +32,8 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         [BindProperty]
         public CreatePropertyCommand PropertyCommand { get; set; } = new();
         public SelectList CategoryList { get; set; }
+        public SelectList PropertyTypeList { get; set; }
+
 
         [BindProperty]
         public List<IFormFile>? ImageFiles { get; set; }
@@ -41,6 +44,7 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         {
             var categories = await _mediator.Send(new GetAllCategoriesQuery());
             CategoryList = new SelectList(categories, "Id", "Name");
+            PropertyTypeList = new SelectList(Enum.GetValues(typeof(PropertyType)));
         }
 
         public async Task<IActionResult> OnPostAsync()

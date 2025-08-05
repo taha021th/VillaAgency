@@ -40,5 +40,10 @@ namespace VillaAgency.Infrastructure.Repositories
         {
             return await _context.Categories.CountDocumentsAsync(filter);
         }
+
+        public async Task<IEnumerable<Category?>> FindAsync(Expression<Func<Category, bool>> predicate)
+        {
+            return await _context.Categories.Find(predicate).ToListAsync();
+        }
     }
 }

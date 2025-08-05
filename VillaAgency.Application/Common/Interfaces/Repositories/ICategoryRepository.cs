@@ -11,5 +11,6 @@ namespace VillaAgency.Application.Common.Interfaces.Repositories
         Task UpdateAsync(Category category);
         Task DeleteAsync(Guid id);
         Task<long> CountAsync(Expression<Func<Category, bool>> filter);
+        Task<IEnumerable<Category?>> FindAsync(Expression<Func<Category, bool>> predicate);
     }
 }

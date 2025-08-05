@@ -23,7 +23,7 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
             _mediator = mediator;
             _fileStorageService = fileStorageService;
             _videoStorageService = videoStorageService;
-            _cacheService=cacheService;
+            _cacheService = cacheService;
         }
 
         [BindProperty]
@@ -37,7 +37,10 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
         public List<string> SubmittedImageUrls { get; set; } = new();
         public List<string> SubmittedVideoUrls { get; set; } = new();
 
+        // پراپرتی جدید برای مدیریت خطا
+        public bool IsPostBackWithError { get; set; } = false;
 
+        // متد OnGetAsync بدون تغییر
         public async Task OnGetAsync()
         {
             await LoadCategoryList();
@@ -47,7 +50,6 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                 var submission = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
                 if (submission != null)
                 {
-
                     CreatePropertyCommand.Title = submission.Title;
                     CreatePropertyCommand.Description = submission.Description;
                     CreatePropertyCommand.Address = submission.Address;
@@ -60,7 +62,9 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
                     CreatePropertyCommand.UnitsCountInFloor = submission.UnitsCountInFloor;
                     CreatePropertyCommand.BuildDate = submission.BuildDate;
                     CreatePropertyCommand.CategoryId = submission.CategoryId;
-
+                    CreatePropertyCommand.TransactionType = submission.TransactionType;
+                    CreatePropertyCommand.FullName=submission.FullName;
+                    CreatePropertyCommand.PhoneNumber=submission.PhoneNumber;
 
                     SubmittedImageUrls = submission.ImageUrls ?? new List<string>();
                     SubmittedVideoUrls = submission.VideoUrls ?? new List<string>();
@@ -68,26 +72,31 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
             }
         }
 
+        // متد OnPostAsync اصلاح شده
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                // به ویو اطلاع بده که با خطا برگشته‌ایم
+                IsPostBackWithError = true;
+
                 await LoadCategoryList();
 
+                // نیاز به بارگذاری مجدد تصاویر و ویدئوها داریم تا در صفحه باقی بمانند
                 var submissionOnErr = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
                 if (submissionOnErr != null)
                 {
-                    SubmittedImageUrls = submissionOnErr.ImageUrls ?? new List<string>();
-                    SubmittedVideoUrls = submissionOnErr.VideoUrls ?? new List<string>();
+                    // از لیست تصاویر و ویدئوهای ارسالی در فرم استفاده می‌کنیم چون ممکن است کاربر مواردی را حذف کرده باشد
+                    SubmittedImageUrls = CreatePropertyCommand.ImageUrls?.ToList() ?? new List<string>();
+                    SubmittedVideoUrls = CreatePropertyCommand.VideoUrls?.ToList() ?? new List<string>();
                 }
                 return Page();
             }
 
-
+            // بقیه منطق OnPostAsync بدون تغییر باقی می‌ماند
             var originalSubmission = await _mediator.Send(new GetPropertySubmissionByIdQuery { Id = SubmissionId });
             if (originalSubmission != null)
             {
-
                 var originalImageUrls = originalSubmission.ImageUrls ?? new List<string>();
                 var submittedImageUrls = CreatePropertyCommand.ImageUrls ?? new List<string>();
                 var imagesToDelete = originalImageUrls.Except(submittedImageUrls).ToList();
@@ -107,9 +116,9 @@ namespace VillaAgency.Web.Pages.Admin.Submissions
             }
 
             await _mediator.Send(CreatePropertyCommand);
+            // ... حذف کش و تنظیم TempData
             await _cacheService.RemoveDataAsync("properties_first_page_list");
             TempData["success"] = "ملک با موفقیت از روی درخواست ثبت شد.";
-
 
             return RedirectToPage("/Admin/Properties/Index");
         }

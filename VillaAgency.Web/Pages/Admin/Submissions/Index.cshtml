@@ -4,55 +4,92 @@
     ViewData["Title"] = "درخواست‌های سپردن ملک";
 }
 
-<div class="bg-slate-50 p-4 md:p-6 lg:p-8">
-    <!-- بخش هدر صفحه -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">مدیریت درخواست‌های سپردن ملک</h1>
-        <p class="mt-2 text-sm text-gray-500">درخواست‌های ثبت شده توسط کاربران را بررسی و مدیریت کنید.</p>
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1 text-dark">مدیریت درخواست‌های ملک</h1>
+        <p class="text-muted">درخواست‌های ثبت شده توسط کاربران جهت سپردن ملک را در این بخش بررسی و مدیریت کنید.</p>
     </div>
 
-    <!-- جدول نمایش درخواست‌ها -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-right">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="p-3 font-semibold text-gray-600">نام کامل متقاضی</th>
-                        <th class="p-3 font-semibold text-gray-600">شماره تماس</th>
-                        <th class="p-3 font-semibold text-gray-600">نوع معامله</th>
-                        <th class="p-3 font-semibold text-gray-600">تاریخ ثبت</th>
-                        <th class="p-3 font-semibold text-gray-600">عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.PendingSubmissions != null && Model.PendingSubmissions.Any())
-                    {
-                        @foreach (var item in Model.PendingSubmissions)
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="w-auto ps-4">متقاضی</th>
+                            <th scope="col" style="width: 20%;">نوع معامله</th>
+                            <th scope="col" style="width: 25%;">تاریخ ثبت</th>
+                            <th scope="col" class="text-center" style="width: 20%;">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PendingSubmissions != null && Model.PendingSubmissions.Any())
                         {
-                            <tr class="border-b border-gray-100 last:border-b-0">
-                                <td class="p-3 text-gray-800 font-medium">@item.FullName</td>
-                                <td class="p-3 text-gray-500" dir="ltr">@item.PhoneNumber</td>
-                                <td class="p-3 text-gray-500">@item.TransactionType</td>
-                                <td class="p-3 text-gray-500">@item.SubmittedAt.ToString("yyyy/MM/dd - HH:mm")</td>
-                                <td class="p-3">
-                                    <!-- **اصلاح شد:** لینک دکمه به صورت مستقیم ساخته شد تا از عملکرد صحیح آن اطمینان حاصل شود -->
-                                    <a href="/Admin/Submissions/Create?submissionId=@item.Id" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
-                                        بررسی و ایجاد ملک
-                                    </a>
+                            @foreach (var item in Model.PendingSubmissions)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="avatar-circle bg-primary-subtle text-primary">
+                                                <span>@item.FullName.First()</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">@item.FullName</div>
+                                                <div class="text-muted small" dir="ltr">@item.PhoneNumber</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (item.TransactionType == "خرید و فروش")
+                                        {
+                                            <span class="badge text-bg-info">خرید و فروش</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge text-bg-success">رهن و اجاره</span>
+                                        }
+                                    </td>
+                                    <td class="text-muted">
+                                        @item.SubmittedAt.ToString("yyyy/MM/dd - HH:mm")
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/Admin/Submissions/Create?submissionId=@item.Id" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-pencil-square me-1"></i> بررسی و ایجاد ملک
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4">
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-inbox fs-2 text-muted"></i>
+                                        <h5 class="mt-3">هیچ درخواست جدیدی وجود ندارد</h5>
+                                        <p class="text-muted">به محض ثبت درخواست جدید، در این قسمت نمایش داده خواهد شد.</p>
+                                    </div>
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center p-4 text-gray-500">
-                                در حال حاضر هیچ درخواست جدیدی برای بررسی وجود ندارد.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .avatar-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+</style>

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.OpenApi.Extensions;
 using VillaAgency.Application.Common.Interfaces.Services;
 using VillaAgency.Application.Handlers.Categories.Queries;
 using VillaAgency.Application.Handlers.Properties.Commands;
 using VillaAgency.Application.Handlers.Properties.Queries;
+using VillaAgency.Domain.Entities.Enums;
 
 namespace VillaAgency.Web.Pages.Admin.Properties
 {
@@ -16,54 +18,55 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         private readonly IMediator _mediator;
         private readonly IFileStorageService _fileStorageService;
         private readonly IVideoStorageService _videoStorageService;
-        private readonly ICacheService _cacheService;
 
-        public EditModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService, ICacheService cacheService)
+        public EditModel(IMediator mediator, IFileStorageService fileStorageService, IVideoStorageService videoStorageService)
         {
             _mediator = mediator;
             _fileStorageService = fileStorageService;
             _videoStorageService = videoStorageService;
-            _cacheService=cacheService;
         }
 
         [BindProperty]
         public UpdatePropertyCommand PropertyCommand { get; set; } = new();
+
+        public SelectList CategoryList { get; set; }
+        // **پراپرتی جدید برای لیست کشویی نوع ملک**
+        public SelectList PropertyTypeList { get; set; }
 
         [BindProperty]
         public List<IFormFile>? NewImageFiles { get; set; }
         [BindProperty]
         public List<IFormFile>? NewVideoFiles { get; set; }
 
-        public SelectList CategoryList { get; set; }
-
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            await LoadCategories();
             var property = await _mediator.Send(new GetPropertyByIdQuery(id));
             if (property == null)
             {
                 return NotFound();
             }
 
-            PropertyCommand = new UpdatePropertyCommand
-            {
-                Id = property.Id,
-                Title = property.Title,
-                Description = property.Description,
-                Price = property.Price,
-                Area = property.Area,
-                Bedrooms = property.Bedrooms,
-                Floor = property.Floor,
-                FloorsCount = property.FloorsCount,
-                UnitsCountInFloor = property.UnitsCountInFloor,
-                Unit = property.Unit,
-                BuildDate = property.BuildDate,
-                Address = property.Address,
-                CategoryId = property.CategoryId,
-                ImageUrls = property.ImageUrls ?? new List<string>(),
-                VideoUrls = property.VideoUrls ?? new List<string>(),
-            };
+            // Map entity to command
+            PropertyCommand.Id = property.Id;
+            PropertyCommand.Title = property.Title;
+            PropertyCommand.Description = property.Description;
+            PropertyCommand.Address = property.Address;
+            PropertyCommand.Price = property.Price;
+            PropertyCommand.Area = property.Area;
+            PropertyCommand.Bedrooms = property.Bedrooms;
+            PropertyCommand.Floor = property.Floor;
+            PropertyCommand.FloorsCount = property.FloorsCount;
+            PropertyCommand.Unit = property.Unit;
+            PropertyCommand.UnitsCountInFloor = property.UnitsCountInFloor;
+            PropertyCommand.BuildDate = property.BuildDate;
+            PropertyCommand.CategoryId = property.CategoryId;
+            PropertyCommand.ImageUrls = property.ImageUrls;
+            PropertyCommand.VideoUrls = property.VideoUrls;
+            PropertyCommand.FullName = property.FullName;
+            PropertyCommand.PhoneNumber = property.PhoneNumber;
+            PropertyCommand.TransactionType=property.TransactionType;
 
+            await LoadPrerequisites();
             return Page();
         }
 
@@ -71,70 +74,41 @@ namespace VillaAgency.Web.Pages.Admin.Properties
         {
             if (!ModelState.IsValid)
             {
-                await LoadCategories();
+                await LoadPrerequisites();
                 return Page();
             }
 
-            // ۱. واکشی اطلاعات فعلی ملک برای یافتن فایل‌های حذف شده
-            var originalProperty = await _mediator.Send(new GetPropertyByIdQuery(PropertyCommand.Id));
-            if (originalProperty == null)
-            {
-                return NotFound();
-            }
-
-            // ۲. شناسایی و حذف تصاویر حذف شده از روی سرور
-            var originalImageUrls = originalProperty.ImageUrls ?? new List<string>();
-            var submittedImageUrls = PropertyCommand.ImageUrls ?? new List<string>();
-            var imagesToDelete = originalImageUrls.Except(submittedImageUrls).ToList();
-
-            foreach (var imageUrl in imagesToDelete)
-            {
-                var fileName = Path.GetFileName(imageUrl);
-                // فرض بر این است که متد DeleteFileAsync در سرویس شما وجود دارد
-                await _fileStorageService.DeleteFileAsync(fileName, "images");
-            }
-
-            // ۳. شناسایی و حذف ویدئوهای حذف شده از روی سرور
-            var originalVideoUrls = originalProperty.VideoUrls ?? new List<string>();
-            var submittedVideoUrls = PropertyCommand.VideoUrls ?? new List<string>();
-            var videosToDelete = originalVideoUrls.Except(submittedVideoUrls).ToList();
-
-            foreach (var videoUrl in videosToDelete)
-            {
-                var fileName = Path.GetFileName(videoUrl);
-                // فرض بر این است که متد DeleteVideoAsync در سرویس شما وجود دارد
-                await _videoStorageService.DeleteVideoAsync(fileName, "videos");
-            }
-
-            // ۴. آپلود تصاویر جدید و اضافه کردن آدرس آن‌ها به لیست
             if (NewImageFiles != null && NewImageFiles.Any())
             {
-                var newImageUrls = await _fileStorageService.SaveFilesAsync(NewImageFiles, "images");
-                submittedImageUrls.AddRange(newImageUrls);
+                var newImageUrls = await _fileStorageService.SaveFilesAsync(NewImageFiles, "images/properties");
+                if (PropertyCommand.ImageUrls == null) PropertyCommand.ImageUrls = new List<string>();
+                PropertyCommand.ImageUrls.AddRange(newImageUrls);
             }
 
-            // ۵. آپلود ویدئوهای جدید و اضافه کردن آدرس آن‌ها به لیست
             if (NewVideoFiles != null && NewVideoFiles.Any())
             {
-                var newVideoUrls = await _videoStorageService.SaveVideosAsync(NewVideoFiles, "videos");
-                submittedVideoUrls.AddRange(newVideoUrls);
+                var newVideoUrls = await _videoStorageService.SaveVideosAsync(NewVideoFiles, "videos/properties");
+                if (PropertyCommand.VideoUrls == null) PropertyCommand.VideoUrls = new List<string>();
+                PropertyCommand.VideoUrls.AddRange(newVideoUrls);
             }
 
-            // ۶. به‌روزرسانی لیست نهایی آدرس‌ها در Command
-            PropertyCommand.ImageUrls = submittedImageUrls;
-            PropertyCommand.VideoUrls = submittedVideoUrls;
-
-            // ۷. ارسال دستور نهایی برای آپدیت در دیتابیس
             await _mediator.Send(PropertyCommand);
-            await _cacheService.RemoveDataAsync("properties_first_page_list");
-
+            TempData["success"] = "ملک با موفقیت ویرایش شد.";
             return RedirectToPage("./Index");
         }
 
-        private async Task LoadCategories()
+        private async Task LoadPrerequisites()
         {
             var categories = await _mediator.Send(new GetAllCategoriesQuery());
             CategoryList = new SelectList(categories, "Id", "Name");
+
+            // ساخت SelectList با نام‌های فارسی برای Enum
+            PropertyTypeList = new SelectList(
+                Enum.GetValues(typeof(PropertyType)).Cast<Enum>()
+                    .Select(e => new { Value = e, DisplayName = e.GetDisplayName() }),
+                "Value",
+                "DisplayName"
+            );
         }
     }
 }

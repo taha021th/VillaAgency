@@ -21,58 +21,33 @@
             <div class="col-lg-8 offset-lg-2">
                 <form method="post" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                    <div class="form-group mb-3">
-                        <label asp-for="PropertyCommand.CategoryId" class="control-label">دسته‌بندی</label>
-                        <select asp-for="PropertyCommand.CategoryId" class="form-control" asp-items="Model.CategoryList">
-                            <option value="">-- انتخاب کنید --</option>
-                        </select>
-                        <span asp-validation-for="PropertyCommand.CategoryId" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label asp-for="PropertyCommand.Title" class="control-label"></label>
-                        <input asp-for="PropertyCommand.Title" class="form-control" />
-                        <span asp-validation-for="PropertyCommand.Title" class="text-danger"></span>
-                    </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label asp-for="PropertyCommand.Price" class="control-label"></label>
-                                <input asp-for="PropertyCommand.Price" class="form-control" />
-                                <span asp-validation-for="PropertyCommand.Price" class="text-danger"></span>
+                                <label asp-for="PropertyCommand.CategoryId" class="control-label">دسته‌بندی</label>
+                                <select asp-for="PropertyCommand.CategoryId" class="form-control form-select" asp-items="Model.CategoryList">
+                                    <option value="">-- انتخاب کنید --</option>
+                                </select>
+                                <span asp-validation-for="PropertyCommand.CategoryId" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="PropertyCommand.Area" class="control-label"></label>
-                                <input asp-for="PropertyCommand.Area" class="form-control" />
-                                <span asp-validation-for="PropertyCommand.Area" class="text-danger"></span>
-                            </div>
-                        </div>
+                        
                     </div>
+
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.FullName" class="control-label"></label><input asp-for="PropertyCommand.FullName" class="form-control" /><span asp-validation-for="PropertyCommand.FullName" class="text-danger"></span></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.PhoneNumber" class="control-label"></label><input asp-for="PropertyCommand.PhoneNumber" class="form-control" /><span asp-validation-for="PropertyCommand.PhoneNumber" class="text-danger"></span></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Title" class="control-label"></label><input asp-for="PropertyCommand.Title" class="form-control" /><span asp-validation-for="PropertyCommand.Title" class="text-danger"></span></div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="PropertyCommand.Bedrooms" class="control-label"></label>
-                                <input asp-for="PropertyCommand.Bedrooms" class="form-control" />
-                                <span asp-validation-for="PropertyCommand.Bedrooms" class="text-danger"></span>
-                            </div>
-                        </div>
-
+                        <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Price"></label><input asp-for="PropertyCommand.Price" class="form-control" /><span asp-validation-for="PropertyCommand.Price" class="text-danger"></span></div></div>
+                        <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Area"></label><input asp-for="PropertyCommand.Area" class="form-control" /><span asp-validation-for="PropertyCommand.Area" class="text-danger"></span></div></div>
                     </div>
-
-                    <div class="form-group mb-3">
-                        <label asp-for="PropertyCommand.Address" class="control-label"></label>
-                        <input asp-for="PropertyCommand.Address" class="form-control" />
-                        <span asp-validation-for="PropertyCommand.Address" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Bedrooms"></label><input asp-for="PropertyCommand.Bedrooms" class="form-control" /><span asp-validation-for="PropertyCommand.Bedrooms" class="text-danger"></span></div></div>
                     </div>
-                    <div class="form-group mb-3">
-                        <label asp-for="PropertyCommand.Description" class="control-label"></label>
-                        <input asp-for="PropertyCommand.Description" class="form-control" />
-                        <span asp-validation-for="PropertyCommand.Description" class="text-danger"></span>
-                    </div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Address"></label><input asp-for="PropertyCommand.Address" class="form-control" /><span asp-validation-for="PropertyCommand.Address" class="text-danger"></span></div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.Description"></label><input asp-for="PropertyCommand.Description" class="form-control" /><span asp-validation-for="PropertyCommand.Description" class="text-danger"></span></div>
                     <div class="row">
                         <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Floor"></label><input asp-for="PropertyCommand.Floor" class="form-control" /></div></div>
                         <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.FloorsCount"></label><input asp-for="PropertyCommand.FloorsCount" class="form-control" /></div></div>
@@ -81,34 +56,21 @@
                         <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.UnitsCountInFloor"></label><input asp-for="PropertyCommand.UnitsCountInFloor" class="form-control" /></div></div>
                         <div class="col-md-6"><div class="form-group mb-3"><label asp-for="PropertyCommand.Unit"></label><input asp-for="PropertyCommand.Unit" class="form-control" /></div></div>
                     </div>
-                    <div class="form-group mb-3">
-                        
-                            <label asp-for="PropertyCommand.BuildDate" class="control-label">تاریخ ساخت</label>
-                        <input asp-for="PropertyCommand.BuildDate" class="form-control" id="buildDatePicker" autocomplete="off" />
-                        <span asp-validation-for="PropertyCommand.BuildDate" class="text-danger"></span>
-                        
-                        <!-- **بخش جدید: آپلود چندین تصویر** -->
-                        <div class="col-lg-6 mt-3">
-                            <fieldset>
-                                <label asp-for="ImageFiles" class="control-label">تصاویر ملک</label>
-                                <input asp-for="ImageFiles" class="form-control" type="file" multiple accept="image/*" />
-                                <span asp-validation-for="ImageFiles" class="text-danger"></span>
-                            </fieldset>
-                        </div>
+                    <div class="form-group mb-3"><label asp-for="PropertyCommand.BuildDate" class="control-label">تاریخ ساخت</label><input asp-for="PropertyCommand.BuildDate" class="form-control" id="buildDatePicker" autocomplete="off" /><span asp-validation-for="PropertyCommand.BuildDate" class="text-danger"></span></div>
+                    <div class="col-lg-12 mt-3">
+                        <fieldset>
+                            <label class="mb-3">نوع معامله</label>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="PropertyCommand.TransactionType" value="خرید" id="buyRadio"><label for="buyRadio" class="form-check-label">خرید</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="PropertyCommand.TransactionType" value="رهن و اجاره" id="rentRadio"><label for="rentRadio" class="form-check-label">رهن و اجاره</label></div>
+                            <span asp-validation-for="PropertyCommand.TransactionType" class="text-danger d-block mt-2"></span>
+                        </fieldset>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 mt-3"><fieldset><label asp-for="ImageFiles" class="control-label">تصاویر ملک</label><input asp-for="ImageFiles" class="form-control" type="file" multiple accept="image/*" /><span asp-validation-for="ImageFiles" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mt-3"><fieldset><label asp-for="VideoFiles" class="control-label">ویدئوهای ملک</label><input asp-for="VideoFiles" class="form-control" type="file" multiple accept="video/*" /><span asp-validation-for="VideoFiles" class="text-danger"></span></fieldset></div>
+                    </div>
 
-                        <!-- **بخش جدید: آپلود چندین ویدئو** -->
-                        <div class="col-lg-6 mt-3">
-                            <fieldset>
-                                <label asp-for="VideoFiles" class="control-label">ویدئوهای ملک</label>
-                                <input asp-for="VideoFiles" class="form-control" type="file" multiple accept="video/*" />
-                                <span asp-validation-for="VideoFiles" class="text-danger"></span>
-                            </fieldset>
-                        </div>
-
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success">ایجاد ملک</button>
-                            <a asp-page="Index" class="btn btn-secondary">بازگشت به لیست</a>
-                        </div>
+                    <div class="form-group mt-4"><button type="submit" class="btn btn-success">ایجاد ملک</button><a asp-page="Index" class="btn btn-secondary">بازگشت به لیست</a></div>
                 </form>
             </div>
         </div>
@@ -118,23 +80,19 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <link href="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/kamadatepicker@1.5.1/dist/kamadatepicker.min.js"></script>
-
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function() {
-
+        document.addEventListener("DOMContentLoaded", function () {
             kamaDatepicker('buildDatePicker', {
-        forceDigits: 'en',
-        buttonsColor: "blue",
-        markToday: true,
-        gotoToday: true,
-        autoClose: true,
-        placeholder: "سال/ماه/روز",
-        format: "YYYY/MM/DD"
-        });
-
+                forceDigits: 'en',
+                buttonsColor: "blue",
+                markToday: true,
+                gotoToday: true,
+                autoClose: true,
+                placeholder: "سال/ماه/روز",
+                format: "YYYY/MM/DD"
+            });
         });
     </script>
 }

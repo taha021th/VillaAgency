@@ -56,6 +56,7 @@ namespace VillaAgency.Application.Handlers.PropertySubmissions.Commands
                 ImageUrls = request.ImageUrls,
                 VideoUrls = request.VideoUrls,
 
+
             };
 
 

@@ -4,8 +4,6 @@
     ViewData["Title"] = "لیست املاک";
 }
 
-<!-- 2. سپس، محتوای فایل Pages/Properties.cshtml را با کد زیر جایگزین کنید -->
-
 <div class="page-heading header-text">
     <div class="container">
         <div class="row">
@@ -19,11 +17,9 @@
 
 <div class="section properties" style="background-color: #fff;">
     <div class="container">
-        <!-- فرم فیلتر پیشرفته -->
         <div class="row mb-5">
             <div class="col-lg-12">
                 <form id="advanced-filter-form" class="p-4 rounded" style="background-color: #f9f9f9;" method="get">
-                    <!-- فیلدهای فیلتر بدون تغییر باقی می‌مانند -->
                     <div class="row g-3 align-items-end">
                         <div class="col-12 mb-2">
                             <label asp-for="SearchTerm" class="form-label">جستجو در املاک</label>
@@ -59,7 +55,6 @@
             </div>
         </div>
 
-        <!-- بخش نمایش املاک -->
         <div class="row properties-box">
             @if (Model.Properties != null && Model.Properties.Any())
             {
@@ -68,7 +63,7 @@
                     <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items">
                         <div class="item">
                             <a asp-page="/PropertyDetails" asp-route-id="@property.Id">
-                                <img src="@(property.ImageUrls != null && property.ImageUrls.Any() ? property.ImageUrls.First() : "property-01.jpg")" alt="تصویر ملک: @property.Title">
+                                <img src="@Url.Content(property.ImageUrls != null && property.ImageUrls.Any() ? property.ImageUrls.First() : "/images/banner-01.jpg")" onerror="this.onerror=null; this.src='@Url.Content("/images/default/defaultproperty.png")';" alt="تصویر ملک: @property.Title" height="200px" style="object-fit: cover; width: 100%;">
                             </a>
                             <span class="category">@property.CategoryName</span>
                             <h6>@property.Price.ToString("N0") تومان</h6>
@@ -92,18 +87,13 @@
             }
         </div>
 
-        <!-- بخش صفحه‌بندی هوشمند -->
         <div class="row">
             <div class="col-lg-12">
                 <ul class="pagination">
                     @{
-                        // تعیین محدوده صفحاتی که نمایش داده می‌شوند (مثلاً 2 صفحه قبل و 2 صفحه بعد)
                         int startPage = Math.Max(1, Model.CurrentPage - 2);
                         int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
-
-                        // اگر در صفحات ابتدایی هستیم، مطمئن شو که 5 دکمه نمایش داده می‌شود (در صورت وجود)
                         if (startPage <= 2) endPage = Math.Min(Model.TotalPages, 5);
-                        // اگر در صفحات انتهایی هستیم، مطمئن شو که 5 دکمه نمایش داده می‌شود (در صورت وجود)
                         if (endPage >= Model.TotalPages - 2) startPage = Math.Max(1, Model.TotalPages - 4);
                     }
 

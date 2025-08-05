@@ -4,6 +4,160 @@
     ViewData["Title"] = "درخواست ملک";
 }
 
+@* استایل‌های سفارشی برای طراحی جدید فرم *@
+<style>
+    .request-form-container {
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: -50px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* استایل مراحل (Steps) */
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #eee;
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        padding: 0 15px;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #f2f2f2;
+        color: #aaa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 22px;
+        border: 2px solid #eee;
+        transition: all 0.3s ease;
+    }
+
+    .step-title {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #888;
+        font-weight: 500;
+    }
+
+    .step.active .step-icon,
+    .step.completed .step-icon {
+        background-color: #f35525;
+        color: #fff;
+        border-color: #f35525;
+    }
+
+    .step.completed .step-icon {
+        background-color: #1e9e1e;
+        border-color: #1e9e1e;
+    }
+
+    .step.active .step-title {
+        color: #f35525;
+        font-weight: 700;
+    }
+
+    .step.completed .step-title {
+        color: #1e9e1e;
+    }
+
+    /* استایل اینپوت‌ها */
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        height: auto;
+    }
+
+        .form-control:focus {
+            border-color: #f35525;
+            box-shadow: 0 0 0 0.2rem rgba(243, 85, 37, 0.25);
+        }
+
+    label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* استایل دکمه‌های رادیویی و چک‌باکس‌ها */
+    .form-check-inline .form-check-input {
+        display: none;
+    }
+
+    .form-check-inline .form-check-label {
+        background-color: #f2f2f2;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        font-weight: 500;
+    }
+
+    .form-check-inline .form-check-input:checked + .form-check-label {
+        background-color: #f35525;
+        color: #fff;
+        border-color: #f35525;
+    }
+
+    /* استایل دکمه‌ها */
+    .form-navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .main-button {
+        background-color: #f35525;
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 30px;
+        border: none;
+    }
+
+    .secondary-button {
+        background-color: #6c757d;
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 30px;
+        border: none;
+    }
+
+    .tab-pane {
+        display: none;
+    }
+
+        .tab-pane.active {
+            display: block;
+        }
+</style>
+
 <div class="page-heading header-text">
     <div class="container">
         <div class="row">
@@ -17,78 +171,155 @@
 
 <div class="contact-page section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="section-heading">
-                    <h6>| فرم درخواست ملک</h6>
-                    <h2>مشخصات ملک مورد نظر خود را وارد کنید</h2>
+        <div class="col-lg-10 mx-auto request-form-container">
+            <form id="requestForm" method="post">
+                <div class="step-indicator">
+                    <div class="step active" data-step="1">
+                        <div class="step-icon"><i class="fa fa-user"></i></div>
+                        <div class="step-title">اطلاعات تماس</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-icon"><i class="fa fa-building"></i></div>
+                        <div class="step-title">نوع ملک</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-icon"><i class="fa fa-list-alt"></i></div>
+                        <div class="step-title">مشخصات</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-icon"><i class="fa fa-check"></i></div>
+                        <div class="step-title">تکمیل</div>
+                    </div>
                 </div>
-                <form class="contact-form" method="post">
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success" role="alert">
-                            @TempData["SuccessMessage"]
-                        </div>
-                    }
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <h5 class="mb-3">۱. اطلاعات تماس و نوع درخواست</h5>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="tab-pane active" id="step1">
+                    <h5 class="mb-4 text-center">۱. اطلاعات تماس و نوع درخواست</h5>
                     <div class="row">
-                        <div class="col-lg-6"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
-                        <div class="col-lg-6"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.FullName"></label><input asp-for="Input.FullName" class="form-control"><span asp-validation-for="Input.FullName" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.PhoneNumber"></label><input asp-for="Input.PhoneNumber" class="form-control"><span asp-validation-for="Input.PhoneNumber" class="text-danger"></span></fieldset></div>
                         <div class="col-lg-12 mt-3">
                             <fieldset>
-                                <label>نوع معامله</label>
-                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید"><label class="form-check-label">خرید</label></div>
-                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره"><label class="form-check-label">رهن و اجاره</label></div>
-                                <span asp-validation-for="Input.TransactionType" class="text-danger d-block"></span>
+                                <label class="mb-3">نوع معامله</label>
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="خرید" id="buyRadio"><label for="buyRadio" class="form-check-label">خرید</label></div>
+                                <div class="form-check form-check-inline"><input class="form-check-input" type="radio" asp-for="Input.TransactionType" value="رهن و اجاره" id="rentRadio"><label for="rentRadio" class="form-check-label">رهن و اجاره</label></div>
+                                <span asp-validation-for="Input.TransactionType" class="text-danger d-block mt-2"></span>
                             </fieldset>
                         </div>
                     </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
+                    </div>
+                </div>
 
-                    <hr class="my-4">
-                    <h5 class="mb-3">۲. نوع و منطقه ملک</h5>
+                <div class="tab-pane" id="step2">
+                    <h5 class="mb-4 text-center">۲. نوع و منطقه ملک</h5>
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 mb-4">
                             <fieldset>
                                 <label>نوع ملک (می‌توانید چند مورد انتخاب کنید)</label>
                                 <div class="mt-2">
                                     @foreach (var category in Model.CategoryList)
                                     {
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="Input.CategoryIds" value="@category.Id">
-                                            <label class="form-check-label">@category.Name</label>
+                                            <input class="form-check-input" type="checkbox" name="Input.CategoryIds" value="@category.Id" id="cat-@category.Id">
+                                            <label class="form-check-label" for="cat-@category.Id">@category.Name</label>
                                         </div>
                                     }
                                 </div>
-                                <span asp-validation-for="Input.CategoryIds" class="text-danger d-block"></span>
+                                <span asp-validation-for="Input.CategoryIds" class="text-danger d-block mt-2"></span>
                             </fieldset>
                         </div>
-                        <div class="col-lg-12 mt-3"><fieldset><label asp-for="Input.DesiredRegions"></label><input asp-for="Input.DesiredRegions" class="form-control" placeholder="مثال: فاز ۱، فاز ۴، پردیسان"><span asp-validation-for="Input.DesiredRegions" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-12"><fieldset><label asp-for="Input.DesiredRegions"></label><input asp-for="Input.DesiredRegions" class="form-control" placeholder="مثال: فاز ۱، فاز ۴، پردیسان"><span asp-validation-for="Input.DesiredRegions" class="text-danger"></span></fieldset></div>
                     </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
+                    </div>
+                </div>
 
-                    <hr class="my-4">
-                    <h5 class="mb-3">۳. مشخصات ملک مورد نظر</h5>
+                <div class="tab-pane" id="step3">
+                    <h5 class="mb-4 text-center">۳. مشخصات ملک مورد نظر</h5>
                     <div class="row">
-                        <div class="col-lg-6"><fieldset><label asp-for="Input.MinBudget">از بودجه (تومان)</label><input asp-for="Input.MinBudget" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
-                        <div class="col-lg-6"><fieldset><label asp-for="Input.MaxBudget">تا بودجه (تومان)</label><input asp-for="Input.MaxBudget" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
-                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MinArea">از متراژ (متر)</label><input asp-for="Input.MinArea" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
-                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MaxArea">تا متراژ (متر)</label><input asp-for="Input.MaxArea" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
-                        <div class="col-lg-4 mt-3"><fieldset><label asp-for="Input.MinBedrooms">حداقل تعداد خواب</label><input asp-for="Input.MinBedrooms" type="number" class="form-control" placeholder="اختیاری"></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.MinBudget">از بودجه (تومان)</label><input asp-for="Input.MinBudget" class="form-control" placeholder="اختیاری"><span asp-validation-for="Input.MinBudget" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mb-3"><fieldset><label asp-for="Input.MaxBudget">تا بودجه (تومان)</label><input asp-for="Input.MaxBudget" class="form-control" placeholder="اختیاری"><span asp-validation-for="Input.MaxBudget" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mt-3"><fieldset><label asp-for="Input.MinArea">از متراژ (متر)</label><input asp-for="Input.MinArea" class="form-control" placeholder="اختیاری"><span asp-validation-for="Input.MinArea" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-6 mt-3"><fieldset><label asp-for="Input.MaxArea">تا متراژ (متر)</label><input asp-for="Input.MaxArea" class="form-control" placeholder="اختیاری"><span asp-validation-for="Input.MaxArea" class="text-danger"></span></fieldset></div>
+                        <div class="col-lg-12 mt-3"><fieldset><label asp-for="Input.MinBedrooms">حداقل تعداد خواب</label><input asp-for="Input.MinBedrooms" type="number" class="form-control" placeholder="اختیاری"><span asp-validation-for="Input.MinBedrooms" class="text-danger"></span></fieldset></div>
                     </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="button" class="main-button next-btn">مرحله بعد <i class="fa fa-arrow-left"></i></button>
+                    </div>
+                </div>
 
-                    <hr class="my-4">
-                    <h5 class="mb-3">۴. توضیحات تکمیلی</h5>
+                <div class="tab-pane" id="step4">
+                    <h5 class="mb-4 text-center">۴. توضیحات تکمیلی</h5>
                     <div class="row">
                         <div class="col-lg-12"><fieldset><label asp-for="Input.Description"></label><textarea asp-for="Input.Description" class="form-control" style="min-height: 150px;" placeholder="ویژگی‌های خاص ملک مورد نظرتان را اینجا بنویسید... (اختیاری)"></textarea></fieldset></div>
-                        <div class="col-lg-12 mt-4">
-                            <fieldset>
-                                <button type="submit" class="main-button">ثبت و ارسال درخواست</button>
-                            </fieldset>
-                        </div>
                     </div>
-                </form>
-            </div>
+                    <div class="form-navigation-buttons">
+                        <button type="button" class="secondary-button prev-btn"><i class="fa fa-arrow-right"></i> مرحله قبل</button>
+                        <button type="submit" class="main-button" style="background-color: #1e9e1e;">ثبت و ارسال درخواست <i class="fa fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let currentStep = 1;
+            const steps = document.querySelectorAll('.step');
+            const panes = document.querySelectorAll('.tab-pane');
+
+            function showStep(stepNumber) {
+                // Hide all panes
+                panes.forEach(pane => pane.classList.remove('active'));
+                // Show the current pane
+                document.querySelector('#step' + stepNumber).classList.add('active');
+
+                // Update step indicators
+                steps.forEach(step => {
+                    const stepData = parseInt(step.dataset.step);
+                    step.classList.remove('active', 'completed');
+                    if (stepData < stepNumber) {
+                        step.classList.add('completed');
+                    } else if (stepData === stepNumber) {
+                        step.classList.add('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.next-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (currentStep < 4) {
+                        currentStep++;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.prev-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        showStep(currentStep);
+                    }
+                });
+            });
+
+            // Initialize first step
+            showStep(currentStep);
+        });
+    </script>
+}

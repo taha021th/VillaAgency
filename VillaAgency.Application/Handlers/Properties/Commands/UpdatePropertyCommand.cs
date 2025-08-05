@@ -6,6 +6,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
     public record UpdatePropertyCommand : IRequest
     {
         public Guid Id { get; set; }
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
         public string Title { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
@@ -20,6 +22,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
         public List<string>? ImageUrls { get; set; } = null;
         public List<string>? VideoUrls { get; set; } = null;
         public Guid CategoryId { get; set; }
+        public string TransactionType { get; set; }
+
 
     }
     public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand>
@@ -49,7 +53,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
                 throw new Exception("Category not found");
             }
 
-
+            propertyToUpdate.FullName = request.FullName;
+            propertyToUpdate.PhoneNumber = request.PhoneNumber;
             propertyToUpdate.Title = request.Title;
             propertyToUpdate.Description = request.Description;
             propertyToUpdate.Price = request.Price;
@@ -65,6 +70,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
             propertyToUpdate.CategoryName = category.Name;
             propertyToUpdate.ImageUrls = request.ImageUrls??new List<string>();
             propertyToUpdate.VideoUrls=request.VideoUrls??new List<string>();
+            propertyToUpdate.TransactionType = request.TransactionType;
+
 
             await _propertyRepository.UpdateAsync(propertyToUpdate, cancellationToken);
 

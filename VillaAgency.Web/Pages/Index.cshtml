@@ -1,112 +1,116 @@
 ﻿@page
+@model VillaAgency.Web.Pages.IndexModel
 @{
     ViewData["Title"] = "صفحه اصلی";
 }
 
-<!-- محتوای منحصر به فرد صفحه اصلی از اینجا شروع می‌شود -->
-
 <div class="main-banner">
     <div class="owl-carousel owl-banner">
-        <div class="item item-1">
-            <div class="header-text">
-                <span class="category">تهران، <em>ایران</em></span>
-                <h2>عجله کنید!<br>بهترین ویلا را برای خود انتخاب کنید</h2>
+        @if (Model.Vm.SliderProperties.Any())
+        {
+            @foreach (var property in Model.Vm.SliderProperties)
+            {
+                <div class="item" style="background-image: url(@Url.Content(property.ImageUrls.FirstOrDefault() ?? "~/images/default-property.jpg")); background-size: cover; background-position: center;">
+                    <div class="header-text">
+                        <span class="category">@property.CategoryName، <em>@property.Address.Split('،').FirstOrDefault()</em></span>
+                        <h2><a asp-page="/PropertyDetails" asp-route-id="@property.Id">@property.Title</a></h2>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="item item-1">
+                <div class="header-text">
+                    <span class="category">تهران، <em>ایران</em></span>
+                    <h2>به آژانس املاک ما<br>خوش آمدید</h2>
+                </div>
             </div>
-        </div>
-        <div class="item item-2">
-            <div class="header-text">
-                <span class="category">اصفهان، <em>ایران</em></span>
-                <h2>سریع باشید!<br>بهترین ویلای شهر را به دست آورید</h2>
-            </div>
-        </div>
-        <div class="item item-3">
-            <div class="header-text">
-                <span class="category">شیراز، <em>ایران</em></span>
-                <h2>همین حالا اقدام کنید!<br>بهترین پنت‌هاوس را داشته باشید</h2>
-            </div>
-        </div>
+        }
     </div>
 </div>
 
-<div class="featured section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="left-image">
-                    <img src="~/images/featured.jpg" alt="">
-                    <a href="property-details.html"><img src="~/images/featured-icon.png" alt="" style="max-width: 60px; padding: 0px;"></a>
+@if (Model.Vm.FeaturedProperty != null)
+{
+    <div class="featured section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="left-image">
+                        <img src="@Url.Content(Model.Vm.FeaturedProperty.ImageUrls.FirstOrDefault() ?? "~/images/featured.jpg")" alt="ملک ویژه">
+                        <a asp-page="/PropertyDetails" asp-route-id="@Model.Vm.FeaturedProperty.Id"><img src="~/images/featured-icon.png" alt="" style="max-width: 60px; padding: 0px;"></a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="section-heading">
-                    <h6>| ویژه</h6>
-                    <h2>بهترین آپارتمان و منظره دریا</h2>
-                </div>
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                بهترین لینک‌های مفید؟
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.
+                <div class="col-lg-5">
+                    <div class="section-heading">
+                        <h6>| ملک ویژه</h6>
+                        <h2>@Model.Vm.FeaturedProperty.Title</h2>
+                    </div>
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    توضیحات ملک
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    @Model.Vm.FeaturedProperty.Description
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    چرا این ملک بهترین است؟
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    این ملک با داشتن امکانات مدرن و موقعیت جغرافیایی عالی، یکی از بهترین گزینه‌ها برای سرمایه‌گذاری و سکونت می‌باشد.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    جزئیات پرداخت چگونه است؟
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                   برای اطلاع از شرایط پرداخت و دریافت مشاوره مالی، می‌توانید با کارشناسان ما در تماس باشید.
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                این چطور کار می‌کند؟
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                چرا آژانس ویلا بهترین است؟
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="info-table">
-                    <ul>
-                        <li>
-                            <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
-                            <h4>۲۵۰ متر مربع<br><span>فضای کل آپارتمان</span></h4>
-                        </li>
-                        <li>
-                            <img src="~/images/info-icon-02.png" alt="" style="max-width: 52px;">
-                            <h4>قرارداد<br><span>قرارداد آماده</span></h4>
-                        </li>
-                        <li>
-                            <img src="~/images/info-icon-03.png" alt="" style="max-width: 52px;">
-                            <h4>پرداخت<br><span>فرآیند پرداخت</span></h4>
-                        </li>
-                        <li>
-                            <img src="~/images/info-icon-04.png" alt="" style="max-width: 52px;">
-                            <h4>امنیت<br><span>کنترل ۲۴/۷</span></h4>
-                        </li>
-                    </ul>
+                <div class="col-lg-3">
+                    <div class="info-table">
+                        <ul>
+                            <li>
+                                <img src="~/images/info-icon-01.png" alt="" style="max-width: 52px;">
+                                <h4>@Model.Vm.FeaturedProperty.Area متر مربع<br><span>فضای کل</span></h4>
+                            </li>
+                            <li>
+                                <img src="~/images/info-icon-02.png" alt="" style="max-width: 52px;">
+                                <h4>قرارداد<br><span>آماده انتقال</span></h4>
+                            </li>
+                            <li>
+                                <img src="~/images/info-icon-03.png" alt="" style="max-width: 52px;">
+                                <h4>پرداخت<br><span>نقدی / اقساطی</span></h4>
+                            </li>
+                            <li>
+                                <img src="~/images/info-icon-04.png" alt="" style="max-width: 52px;">
+                                <h4>امنیت<br><span>نگهبانی ۲۴/۷</span></h4>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+}
 <div class="video section">
     <div class="container">
         <div class="row">
@@ -125,14 +129,13 @@
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <div class="video-frame">
-                    <img src="~/images/video-frame.jpg" alt="">
+                    <img src="~/images/video-frame.jpg" alt="ویدئوی معرفی ملک">
                     <a href="https://youtube.com" target="_blank"><i class="fa fa-play"></i></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <div class="fun-facts">
     <div class="container">
         <div class="row">
@@ -141,14 +144,14 @@
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="counter">
-                                <h2 class="timer count-title count-number" data-to="34" data-speed="1000"></h2>
-                                <p class="count-text ">ساختمان<br>تکمیل شده</p>
+                                <h2 class="timer count-title count-number" data-to="@Model.Vm.TotalPropertiesCount" data-speed="1000"></h2>
+                                <p class="count-text ">ملک<br>ثبت شده</p>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="counter">
-                                <h2 class="timer count-title count-number" data-to="12" data-speed="1000"></h2>
-                                <p class="count-text ">سال<br>تجربه</p>
+                                <h2 class="timer count-title count-number" data-to="@Model.Vm.TotalAgentsCount" data-speed="1000"></h2>
+                                <p class="count-text ">مشاور<br>فعال</p>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -167,106 +170,62 @@
 <div class="section best-deal">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4">
-                <div class="section-heading">
-                    <h6>| بهترین معامله</h6>
-                    <h2>بهترین معامله خود را همین حالا پیدا کنید!</h2>
-                </div>
-            </div>
+            <div class="col-lg-4"><div class="section-heading"><h6>| بهترین معامله</h6><h2>بهترین معامله خود را همین حالا پیدا کنید!</h2></div></div>
             <div class="col-lg-12">
                 <div class="tabs-content">
                     <div class="row">
-                        <div class="nav-wrapper ">
+                        <div class="nav-wrapper">
                             <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="appartment-tab" data-bs-toggle="tab" data-bs-target="#appartment" type="button" role="tab" aria-controls="appartment" aria-selected="true">آپارتمان</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="villa-tab" data-bs-toggle="tab" data-bs-target="#villa" type="button" role="tab" aria-controls="villa" aria-selected="false">خانه ویلایی</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="penthouse-tab" data-bs-toggle="tab" data-bs-target="#penthouse" type="button" role="tab" aria-controls="penthouse" aria-selected="false">پنت‌هاوس</button>
-                                </li>
+                                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#appartment">آپارتمان</button></li>
+                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#villa">خانه ویلایی</button></li>
+                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#penthouse">پنت‌هاوس</button></li>
                             </ul>
                         </div>
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="appartment" role="tabpanel" aria-labelledby="appartment-tab">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="info-table">
-                                            <ul>
-                                                <li>فضای کل <span>۱۸۵ متر مربع</span></li>
-                                                <li>شماره طبقه <span>۲۶</span></li>
-                                                <li>تعداد اتاق <span>۴</span></li>
-                                                <li>پارکینگ <span>دارد</span></li>
-                                                <li>روش پرداخت <span>بانکی</span></li>
-                                            </ul>
-                                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="appartment" role="tabpanel">
+                                @if (Model.Vm.ApartmentDeals != null)
+                                {
+                                    var property = Model.Vm.ApartmentDeals;
+                                    <div class="row">
+                                        <div class="col-lg-3"><div class="info-table"><ul><li>فضای کل <span>@property.Area متر مربع</span></li><li>شماره طبقه <span>@property.Floor</span></li><li>تعداد اتاق <span>@property.Bedrooms</span></li></ul></div></div>
+                                        <div class="col-lg-6"><img src="@Url.Content(property.ImageUrls.FirstOrDefault() ?? "~/images/deal-01.jpg")" alt="@property.Title"></div>
+                                        <div class="col-lg-3"><h4>@property.Title</h4><p>@property.Description</p><div class="main-button"><a asp-page="/PropertyDetails" asp-route-id="@property.Id">رزرو بازدید</a></div></div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <img src="~/images/deal-01.jpg" alt="">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <h4>اطلاعات بیشتر درباره ملک</h4>
-                                        <p>
-                                            این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.
-                                            <br><br>این قالب به صورت رایگان توسط تمپلیت‌مو ارائه شده است.
-                                        </p>
-                                        <div class="main-button">
-                                            <a href="property-details.html">رزرو بازدید</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                }
+                                else
+                                {
+                                    <p class="text-center p-5">در حال حاضر معامله ویژه‌ای برای آپارتمان وجود ندارد.</p>
+                                }
                             </div>
-                            <div class="tab-pane fade" id="villa" role="tabpanel" aria-labelledby="villa-tab">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="info-table">
-                                            <ul>
-                                                <li>فضای کل <span>۲۵۰ متر مربع</span></li>
-                                                <li>شماره طبقه <span>۲۶</span></li>
-                                                <li>تعداد اتاق <span>۵</span></li>
-                                                <li>پارکینگ <span>دارد</span></li>
-                                                <li>روش پرداخت <span>بانکی</span></li>
-                                            </ul>
-                                        </div>
+                            <div class="tab-pane fade" id="villa" role="tabpanel">
+                                @if (Model.Vm.VillaDeals != null)
+                                {
+                                    var property = Model.Vm.VillaDeals;
+                                    <div class="row">
+                                        <div class="col-lg-3"><div class="info-table"><ul><li>فضای کل <span>@property.Area متر مربع</span></li><li>شماره طبقه <span>@property.Floor</span></li><li>تعداد اتاق <span>@property.Bedrooms</span></li></ul></div></div>
+                                        <div class="col-lg-6"><img src="@Url.Content(property.ImageUrls.FirstOrDefault() ?? "~/images/deal-02.jpg")" alt="@property.Title"></div>
+                                        <div class="col-lg-3"><h4>@property.Title</h4><p>@property.Description</p><div class="main-button"><a asp-page="/PropertyDetails" asp-route-id="@property.Id">رزرو بازدید</a></div></div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <img src="~/images/deal-02.jpg" alt="">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <h4>اطلاعات جزئی درباره ویلا</h4>
-                                        <p>این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.</p>
-                                        <div class="main-button">
-                                            <a href="property-details.html">رزرو بازدید</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                }
+                                else
+                                {
+                                    <p class="text-center p-5">در حال حاضر معامله ویژه‌ای برای ویلا وجود ندارد.</p>
+                                }
                             </div>
-                            <div class="tab-pane fade" id="penthouse" role="tabpanel" aria-labelledby="penthouse-tab">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="info-table">
-                                            <ul>
-                                                <li>فضای کل <span>۳۲۰ متر مربع</span></li>
-                                                <li>شماره طبقه <span>۳۴</span></li>
-                                                <li>تعداد اتاق <span>۶</span></li>
-                                                <li>پارکینگ <span>دارد</span></li>
-                                                <li>روش پرداخت <span>بانکی</span></li>
-                                            </ul>
-                                        </div>
+                            <div class="tab-pane fade" id="penthouse" role="tabpanel">
+                                @if (Model.Vm.PenthouseDeals != null)
+                                {
+                                    var property = Model.Vm.PenthouseDeals;
+                                    <div class="row">
+                                        <div class="col-lg-3"><div class="info-table"><ul><li>فضای کل <span>@property.Area متر مربع</span></li><li>شماره طبقه <span>@property.Floor</span></li><li>تعداد اتاق <span>@property.Bedrooms</span></li></ul></div></div>
+                                        <div class="col-lg-6"><img src="@Url.Content(property.ImageUrls.FirstOrDefault() ?? "~/images/deal-03.jpg")" alt="@property.Title"></div>
+                                        <div class="col-lg-3"><h4>@property.Title</h4><p>@property.Description</p><div class="main-button"><a asp-page="/PropertyDetails" asp-route-id="@property.Id">رزرو بازدید</a></div></div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <img src="~/images/deal-03.jpg" alt="">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <h4>اطلاعات بیشتر درباره پنت‌هاوس</h4>
-                                        <p>این یک متن آزمایشی برای نمایش در این بخش است. شما می‌توانید این متن را با محتوای دلخواه خود جایگزین کنید و اطلاعات بیشتری در مورد خدمات خود ارائه دهید.</p>
-                                        <div class="main-button">
-                                            <a href="property-details.html">رزرو بازدید</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                }
+                                else
+                                {
+                                    <p class="text-center p-5">در حال حاضر معامله ویژه‌ای برای پنت‌هاوس وجود ندارد.</p>
+                                }
                             </div>
                         </div>
                     </div>
@@ -279,122 +238,27 @@
 <div class="properties section">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4 offset-lg-4">
-                <div class="section-heading text-center">
-                    <h6>| املاک</h6>
-                    <h2>ما بهترین ملکی که دوست دارید را ارائه می‌دهیم</h2>
-                </div>
-            </div>
+            <div class="col-lg-4 offset-lg-4"><div class="section-heading text-center"><h6>| املاک</h6><h2>جدیدترین املاک ثبت شده</h2></div></div>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-01.jpg" alt=""></a>
-                    <span class="category">ویلای لوکس</span>
-                    <h6>$2.264.000</h6>
-                    <h4><a href="property-details.html">خیابان ۱۸، تهران</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۸</span></li>
-                        <li>حمام: <span>۸</span></li>
-                        <li>مساحت: <span>۵۴۵ متر مربع</span></li>
-                        <li>طبقه: <span>۳</span></li>
-                        <li>پارکینگ: <span>۶</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
+            @foreach (var property in Model.Vm.LatestProperties)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="item">
+                        <a asp-page="/PropertyDetails" asp-route-id="@property.Id"><img src="@Url.Content(property.ImageUrls.FirstOrDefault() ?? "~/images/default-property.jpg")" onerror="this.onerror=null; this.src='@Url.Content("~/images/default-property.jpg")';" height="200px" alt="@property.Title"></a>
+                        <span class="category">@property.CategoryName</span>
+                        <h6>@property.Price.ToString("N0") تومان</h6>
+                        <h4><a asp-page="/PropertyDetails" asp-route-id="@property.Id">@property.Title</a></h4>
+                        <ul>
+                            <li>اتاق خواب: <span>@property.Bedrooms</span></li>
+                            <li>مساحت: <span>@property.Area متر مربع</span></li>
+                        </ul>
+                        <div class="main-button">
+                            <a asp-page="/PropertyDetails" asp-route-id="@property.Id">مشاهده جزئیات</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-02.jpg" alt=""></a>
-                    <span class="category">ویلای لوکس</span>
-                    <h6>$1.180.000</h6>
-                    <h4><a href="property-details.html">خیابان ۵۴، اصفهان</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۶</span></li>
-                        <li>حمام: <span>۵</span></li>
-                        <li>مساحت: <span>۴۵۰ متر مربع</span></li>
-                        <li>طبقه: <span>۳</span></li>
-                        <li>پارکینگ: <span>۸</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-03.jpg" alt=""></a>
-                    <span class="category">ویلای لوکس</span>
-                    <h6>$1.460.000</h6>
-                    <h4><a href="property-details.html">خیابان ۲۶، شیراز</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۵</span></li>
-                        <li>حمام: <span>۴</span></li>
-                        <li>مساحت: <span>۲۲۵ متر مربع</span></li>
-                        <li>طبقه: <span>۳</span></li>
-                        <li>پارکینگ: <span>۱۰</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-04.jpg" alt=""></a>
-                    <span class="category">آپارتمان</span>
-                    <h6>$584.500</h6>
-                    <h4><a href="property-details.html">خیابان ۱۲، تهران</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۴</span></li>
-                        <li>حمام: <span>۳</span></li>
-                        <li>مساحت: <span>۱۲۵ متر مربع</span></li>
-                        <li>طبقه: <span>۲۵</span></li>
-                        <li>پارکینگ: <span>۲</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-05.jpg" alt=""></a>
-                    <span class="category">پنت‌هاوس</span>
-                    <h6>$925.600</h6>
-                    <h4><a href="property-details.html">خیابان ۳۴، تهران</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۴</span></li>
-                        <li>حمام: <span>۴</span></li>
-                        <li>مساحت: <span>۱۸۰ متر مربع</span></li>
-                        <li>طبقه: <span>۳۸</span></li>
-                        <li>پارکینگ: <span>۲</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <a href="property-details.html"><img src="~/images/property-06.jpg" alt=""></a>
-                    <span class="category">آپارتمان مدرن</span>
-                    <h6>$450.000</h6>
-                    <h4><a href="property-details.html">خیابان ۲۲، کرج</a></h4>
-                    <ul>
-                        <li>اتاق خواب: <span>۳</span></li>
-                        <li>حمام: <span>۲</span></li>
-                        <li>مساحت: <span>۱۶۵ متر مربع</span></li>
-                        <li>طبقه: <span>۲۶</span></li>
-                        <li>پارکینگ: <span>۳</span></li>
-                    </ul>
-                    <div class="main-button">
-                        <a href="property-details.html">رزرو بازدید</a>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -435,30 +299,44 @@
                 </div>
             </div>
             <div class="col-lg-5">
-                <form id="contact-form" action="" method="post">
+                <form id="contact-form" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                    {
+                        <div class="alert alert-success">
+                            @Model.StatusMessage
+                        </div>
+                    }
+
                     <div class="row">
                         <div class="col-lg-12">
                             <fieldset>
-                                <label for="name">نام کامل</label>
-                                <input type="name" name="name" id="name" placeholder="نام شما..." autocomplete="on" required>
+                                <label asp-for="Input.Name">نام کامل</label>
+                                <input asp-for="Input.Name" placeholder="نام شما..." autocomplete="on">
+                                <span asp-validation-for="Input.Name" class="text-danger"></span>
                             </fieldset>
                         </div>
                         <div class="col-lg-12">
                             <fieldset>
-                                <label for="email">آدرس ایمیل</label>
-                                <input type="text" name="email" id="email" pattern="[^ @@]*@@[^ @@]*" placeholder="ایمیل شما..." required="">
+                                <label asp-for="Input.Email">آدرس ایمیل</label>
+                                <input asp-for="Input.Email" placeholder="ایمیل شما...">
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
                             </fieldset>
                         </div>
                         <div class="col-lg-12">
                             <fieldset>
-                                <label for="subject">موضوع</label>
-                                <input type="subject" name="subject" id="subject" placeholder="موضوع..." autocomplete="on">
+                                <label asp-for="Input.Subject">موضوع</label>
+                                <input asp-for="Input.Subject" placeholder="موضوع..." autocomplete="on">
+                                <span asp-validation-for="Input.Subject" class="text-danger"></span>
                             </fieldset>
                         </div>
                         <div class="col-lg-12">
                             <fieldset>
-                                <label for="message">پیام</label>
-                                <textarea name="message" id="message" placeholder="پیام شما"></textarea>
+                                <label asp-for="Input.Message">پیام</label>
+                                <textarea asp-for="Input.Message" placeholder="پیام شما"></textarea>
+                                <span asp-validation-for="Input.Message" class="text-danger"></span>
                             </fieldset>
                         </div>
                         <div class="col-lg-12">
@@ -472,5 +350,3 @@
         </div>
     </div>
 </div>
-
-<!-- محتوای منحصر به فرد صفحه اصلی در اینجا تمام می‌شود -->

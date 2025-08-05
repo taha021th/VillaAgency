@@ -6,7 +6,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
 {
     public record CreatePropertyCommand : IRequest<Guid>
     {
-
+        public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
         public string Title { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
@@ -23,6 +24,9 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
         public List<string>? ImageUrls { get; set; }
         public List<string>? VideoUrls { get; set; }
         public string BuildDate { get; set; } = string.Empty;
+        public string TransactionType { get; set; }
+
+
     }
     public class CreatePropertyCommandHandler : IRequestHandler<CreatePropertyCommand, Guid>
     {
@@ -44,6 +48,8 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
             var property = new Property
             {
                 Id = Guid.NewGuid(), // ایجاد یک شناسه جدید
+                FullName=request.FullName,
+                PhoneNumber=request.PhoneNumber,
                 Title = request.Title,
                 Price = request.Price,
                 Description = request.Description,
@@ -60,7 +66,9 @@ namespace VillaAgency.Application.Handlers.Properties.Commands
                 AgentId=request.AgentId,
                 AgentName=request.AgentName,
                 ImageUrls = request.ImageUrls??new List<string>(),
-                VideoUrls=request.VideoUrls??new List<string>()
+                VideoUrls=request.VideoUrls??new List<string>(),
+                TransactionType =request.TransactionType
+
             };
 
             await _propertyRepository.AddAsync(property, cancellationToken);

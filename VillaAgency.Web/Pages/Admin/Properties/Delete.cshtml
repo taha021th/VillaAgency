@@ -22,8 +22,13 @@
                 <h4 class="text-danger">آیا از حذف این ملک اطمینان دارید؟</h4>
                 <hr />
                 <dl class="row">
+                    <dt class="col-sm-3">نام فروشنده:</dt>
+                    <dd class="col-sm-9">@Model.Property.FullName</dd>
+                    <dt class="col-sm-3">شماره موبایل:</dt>
+                    <dd class="col-sm-9">@Model.Property.PhoneNumber</dd>
                     <dt class="col-sm-3">عنوان:</dt>
                     <dd class="col-sm-9">@Model.Property.Title</dd>
+
 
                     <dt class="col-sm-3">قیمت:</dt>
                     <dd class="col-sm-9">@Model.Property.Price.ToString("N0") تومان</dd>
