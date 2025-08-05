@@ -35,6 +35,7 @@ namespace VillaAgency.Domain.Entities
         // اطلاعات سیستمی
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string Status { get; set; } = "Pending";
     }
 }

@@ -13,9 +13,11 @@ namespace VillaAgency.Application.Handlers.Dashboard.Queries
     public class GetDashboardStatsQueryHandler : IRequestHandler<GetDashboardStatsQuery, DashboardViewModel>
     {
         private readonly IPropertyRepository _propertyRepository;
+        private readonly IPropertyRequestRepository _propertyRequestRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IVisitRequestRepository _visitRequestRepository;
         private readonly IContactMessageRepository _messageRepository;
+        private readonly IPropertySubmissionRepository _propertySubmissionRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public GetDashboardStatsQueryHandler(
@@ -23,12 +25,17 @@ namespace VillaAgency.Application.Handlers.Dashboard.Queries
             ICategoryRepository categoryRepository,
             IVisitRequestRepository visitRequestRepository,
             IContactMessageRepository messageRepository,
-            UserManager<ApplicationUser> userManager)
+            IPropertySubmissionRepository propertySubmissionRepository,
+            IPropertyRequestRepository propertyRequestRepository,
+            UserManager<ApplicationUser> userManager
+            )
         {
             _propertyRepository = propertyRepository;
             _categoryRepository = categoryRepository;
             _visitRequestRepository = visitRequestRepository;
             _messageRepository = messageRepository;
+            _propertySubmissionRepository = propertySubmissionRepository;
+            _propertyRequestRepository = propertyRequestRepository;
             _userManager = userManager;
         }
 
@@ -49,15 +56,27 @@ namespace VillaAgency.Application.Handlers.Dashboard.Queries
             var visitRequestsInPeriodTask = _visitRequestRepository.CountAsync(v => v.RequestDate >= startDate);
             var pendingVisitRequestsTask = _visitRequestRepository.CountAsync(v => v.Status == "Pending");
 
+            var totalSubmitPropertiesTask = _propertySubmissionRepository.CountAsync(p => true);
+            var pendingSubmitPropertiesTask = _propertySubmissionRepository.CountAsync(p => p.Status=="Pending");
+            var recentPendingSubmissionPropertiesTask = _propertySubmissionRepository.GetSomeAsync(p => p.Status=="Pending", p => p.CreatedAt, 5);
+
+            var totalRequestPropertiesTask = _propertyRequestRepository.CountAsync(p => true);
+            var pendingRequestPropertiesTask = _propertyRequestRepository.CountAsync(p => p.Status=="Pending");
+            var recentPendingRequestPropertiesTask = _propertyRequestRepository.GetSomeAsync(p => p.Status=="Pending", p => p.CreatedAt, 5);
+
+
             var totalCategoriesTask = _categoryRepository.CountAsync(c => true);
             var unreadMessagesTask = _messageRepository.CountAsync(m => !m.IsRead);
-            var recentVisitRequestsTask = _visitRequestRepository.GetSomeAsync(v => true, v => v.RequestDate, 5);
+            var recentPendingVisitRequestsTask = _visitRequestRepository.GetSomeAsync(v => v.Status=="Pending", v => v.RequestDate, 5);
+
 
 
             await Task.WhenAll(
                 totalPropertiesTask, propertiesInPeriodTask, totalVisitRequestsTask,
                 visitRequestsInPeriodTask, pendingVisitRequestsTask, totalCategoriesTask,
-                unreadMessagesTask, recentVisitRequestsTask
+                unreadMessagesTask, recentPendingVisitRequestsTask, totalSubmitPropertiesTask, pendingSubmitPropertiesTask,
+                totalRequestPropertiesTask, pendingRequestPropertiesTask
+
             );
 
 
@@ -73,7 +92,13 @@ namespace VillaAgency.Application.Handlers.Dashboard.Queries
                 PeriodInDays = request.PeriodInDays,
                 TotalCategories = (int)await totalCategoriesTask,
                 UnreadMessages = (int)await unreadMessagesTask,
-                RecentVisitRequests = (await recentVisitRequestsTask).ToList()
+                RecentVisitRequests = (await recentPendingVisitRequestsTask).ToList(),
+                TotalSubmitProperties = (int)await totalSubmitPropertiesTask,
+                PendingSubmitProperties = (int)await pendingSubmitPropertiesTask,
+                TotalRequestProperties = (int)await totalRequestPropertiesTask,
+                PendingRequestProperties = (int)await pendingRequestPropertiesTask,
+                PropertyRequests=(await recentPendingRequestPropertiesTask).ToList(),
+                PropertySubmissions=(await recentPendingSubmissionPropertiesTask).ToList()
             };
 
             return viewModel;

@@ -42,6 +42,7 @@ namespace VillaAgency.Application.Handlers.PropertyRequests.Commands
                 MaxArea = request.MaxArea,
                 MinBedrooms = request.MinBedrooms,
                 Description = request.Description
+
             };
             await _propertyRequestRepository.AddAsync(entity, cancellationToken);
             return entity.Id;

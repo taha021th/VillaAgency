@@ -3,197 +3,190 @@
 @{
     ViewData["Title"] = "داشبورد مدیریت";
 }
-<style>
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-</style>
 
-<div class="bg-slate-50 p-4 md:p-6 lg:p-8">
-    <!-- بخش هدر و فرم بازه زمانی -->
-    <div class="md:flex md:items-center md:justify-between mb-8">
+<div class="container-fluid py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">داشبورد مدیریتی</h1>
-            <p class="mt-2 text-sm text-gray-500">خلاصه وضعیت و آمارهای کلیدی سامانه.</p>
+            <h1 class="h3 fw-bold mb-1">داشبورد مدیریتی</h1>
+            <p class="text-muted">خلاصه وضعیت و آمارهای کلیدی سامانه در یک نگاه.</p>
         </div>
-        <!-- فرم جدید برای انتخاب بازه زمانی -->
-        <div class="mt-4 md:mt-0">
-            <form method="get" class="flex items-center space-x-2 space-x-reverse bg-white p-2 rounded-lg border">
-                <label for="period" class="text-sm font-medium text-gray-700 whitespace-nowrap">آمار برای</label>
-                <input type="number" name="PeriodInDays" id="period" value="@Model.PeriodInDays" class="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                <label for="period" class="text-sm font-medium text-gray-700">روز گذشته</label>
-                <button type="submit" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    اعمال
-                </button>
+        <div class="mt-3 mt-md-0">
+            <form method="get" class="d-flex align-items-center">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">آمار برای</span>
+                    <input type="number" name="PeriodInDays" id="period" value="@Model.DashboardVm.PeriodInDays" class="form-control text-center" style="max-width: 80px;">
+                    <span class="input-group-text bg-light border-start-0">روز گذشته</span>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- بخش کارت‌های آماری -->
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        <!-- کارت تعداد املاک -->
-        <div class="stat-card transition-all duration-300 bg-white overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-            <div class="p-5">
-                <div class="flex items-start justify-between">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-home fa-2x text-blue-500"></i>
-                    </div>
-                    <div class="text-right">
-                        <p class="truncate text-sm font-medium text-gray-500">کل املاک ثبت شده</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.DashboardVm.TotalProperties</p>
-                        <p class="text-xs text-green-600 font-semibold mt-1">
-                            +@Model.DashboardVm.PropertiesRegisteredInPeriod
-                            در @Model.DashboardVm.PeriodInDays روز گذشته
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-                <div class="text-sm">
-                    <a href="/Admin/Property" class="font-medium text-blue-600 hover:text-blue-800">مشاهده لیست املاک &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- کارت تعداد کاربران -->
-        <div class="stat-card transition-all duration-300 bg-white overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-            <div class="p-5">
-                <div class="flex items-start justify-between">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-users fa-2x text-green-500"></i>
-                    </div>
-                    <div class="text-right">
-                        <p class="truncate text-sm font-medium text-gray-500">تعداد کل کاربران</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.DashboardVm.TotalUsers</p>
-                        <p class="text-xs text-green-600 font-semibold mt-1">
-                            +@Model.DashboardVm.UsersRegisteredInPeriod
-                            در @Model.DashboardVm.PeriodInDays روز گذشته
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-                <div class="text-sm">
-                    <a href="/Admin/Users/Index" class="font-medium text-green-600 hover:text-green-800">مدیریت کاربران &rarr;</a>
-                </div>
-            </div>
-        </div>
-        <!-- کارت درخواست‌های بازدید -->
-        <div class="stat-card transition-all duration-300 bg-white overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-            <div class="p-5">
-                <div class="flex items-start justify-between">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-calendar-check fa-2x text-amber-500"></i>
-                    </div>
-                    <div class="text-right">
-                        <p class="truncate text-sm font-medium text-gray-500">کل درخواست‌های بازدید</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.DashboardVm.TotalVisitRequests</p>
-                        <p class="text-xs text-green-600 font-semibold mt-1">
-                            +@Model.DashboardVm.VisitRequestsInPeriod
-                            در @Model.DashboardVm.PeriodInDays روز گذشته
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-                <div class="text-sm">
-                    <a href="/Admin/VisitRequests" class="font-medium text-amber-600 hover:text-amber-800">بررسی درخواست‌ها &rarr;</a>
-                </div>
-            </div>
-        </div>
-        <!-- کارت پیام‌های جدید -->
-        <div class="stat-card transition-all duration-300 bg-white overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-            <div class="p-5">
-                <div class="flex items-start justify-between">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-inbox fa-2x text-red-500"></i>
-                    </div>
-                    <div class="text-right">
-                        <p class="truncate text-sm font-medium text-gray-500">پیام‌های خوانده نشده</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.DashboardVm.UnreadMessages</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-                <div class="text-sm">
-                    <a href="/Admin/Messages" class="font-medium text-red-600 hover:text-red-800">مشاهده پیام‌ها &rarr;</a>
-                </div>
-            </div>
-        </div>
+    <div class="row g-4">
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">کل املاک</p><h2 class="fw-bold mb-2">@Model.DashboardVm.TotalProperties</h2><span class="badge bg-success-subtle text-success-emphasis rounded-pill">+@Model.DashboardVm.PropertiesRegisteredInPeriod در @Model.DashboardVm.PeriodInDays روز گذشته</span></div><div class="avatar-lg"><span class="avatar-title bg-primary-subtle text-primary rounded-3 fs-2"><i class="bi bi-buildings-fill"></i></span></div></div><a asp-page="/Admin/Properties/Index" class="stretched-link"></a></div></div></div>
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">کل کاربران</p><h2 class="fw-bold mb-2">@Model.DashboardVm.TotalUsers</h2><span class="badge bg-success-subtle text-success-emphasis rounded-pill">+@Model.DashboardVm.UsersRegisteredInPeriod در @Model.DashboardVm.PeriodInDays روز گذشته</span></div><div class="avatar-lg"><span class="avatar-title bg-success-subtle text-success-emphasis rounded-3 fs-2"><i class="bi bi-people-fill"></i></span></div></div><a asp-page="/Admin/Users/Index" class="stretched-link"></a></div></div></div>
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">پیام‌های خوانده نشده</p><h2 class="fw-bold mb-2">@Model.DashboardVm.UnreadMessages</h2><span class="badge bg-info-subtle text-info-emphasis rounded-pill">@Model.DashboardVm.TotalCategories دسته‌بندی فعال</span></div><div class="avatar-lg"><span class="avatar-title bg-danger-subtle text-danger-emphasis rounded-3 fs-2"><i class="bi bi-inbox-fill"></i></span></div></div><a asp-page="/Admin/Messages" class="stretched-link"></a></div></div></div>
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">درخواست سپردن ملک</p><h2 class="fw-bold mb-2">@Model.DashboardVm.TotalSubmitProperties <span class="fs-6 text-muted">عدد</span></h2><span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">@Model.DashboardVm.PendingSubmitProperties مورد در انتظار بررسی</span></div><div class="avatar-lg"><span class="avatar-title bg-info-subtle text-info-emphasis rounded-3 fs-2"><i class="bi bi-file-earmark-arrow-up-fill"></i></span></div></div><a asp-page="/Admin/Submissions/Index" class="stretched-link"></a></div></div></div>
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">درخواست تقاضای ملک</p><h2 class="fw-bold mb-2">@Model.DashboardVm.TotalRequestProperties <span class="fs-6 text-muted">عدد</span></h2><span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">@Model.DashboardVm.PendingRequestProperties مورد در انتظار بررسی</span></div><div class="avatar-lg"><span class="avatar-title bg-info-subtle text-info-emphasis rounded-3 fs-2"><i class="bi bi-file-earmark-check-fill"></i></span></div></div><a asp-page="/Admin/PropertyRequests/Index" class="stretched-link"></a></div></div></div>
+        <div class="col-xl-4 col-md-6"><div class="card shadow-sm border-0 h-100 card-link-hover"><div class="card-body position-relative"><div class="d-flex justify-content-between align-items-start"><div><p class="text-muted mb-1">درخواست بازدید</p><h2 class="fw-bold mb-2">@Model.DashboardVm.TotalVisitRequests <span class="fs-6 text-muted">عدد</span></h2><span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">@Model.DashboardVm.PendingVisitRequests مورد در انتظار بررسی</span></div><div class="avatar-lg"><span class="avatar-title bg-warning-subtle text-warning-emphasis rounded-3 fs-2"><i class="bi bi-calendar-check-fill"></i></span></div></div><a asp-page="/Admin/VisitRequests" class="stretched-link"></a></div></div></div>
     </div>
 
-    <!-- بخش نمودار و جدول -->
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 mt-8">
-        <!-- جدول آخرین درخواست‌های بازدید -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">آخرین درخواست‌های بازدید</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-right">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="p-3 font-semibold text-gray-600">نام ملک</th>
-                            <th class="p-3 font-semibold text-gray-600">متقاضی</th>
-                            <th class="p-3 font-semibold text-gray-600">وضعیت</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.DashboardVm.RecentVisitRequests)
-                        {
-                            <tr class="border-b border-gray-100 last:border-b-0">
-                                <td class="p-3 text-gray-800">@item.PropertyName</td>
-                                <td class="p-3 text-gray-500">@item.UserName</td>
-                                <td class="p-3">
-                                    @if (item.Status == "Pending")
-                                    {
-                                        <span class="inline-flex items-center bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                            <span class="w-2 h-2 mr-1 bg-amber-500 rounded-full"></span>
-                                            در انتظار
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                            <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
-                                            @item.Status
-                                        </span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <div class="row g-4 mt-2">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light">
+                    <ul class="nav nav-tabs card-header-tabs" id="activityTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="visits-tab" data-bs-toggle="tab" data-bs-target="#visits-tab-pane" type="button" role="tab">آخرین درخواست‌های بازدید</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="submissions-tab" data-bs-toggle="tab" data-bs-target="#submissions-tab-pane" type="button" role="tab">آخرین املاک سپرده شده</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-tab-pane" type="button" role="tab">آخرین تقاضاهای ملک</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-0">
+                    <div class="tab-content" id="activityTabContent">
+                        <div class="tab-pane fade show active" id="visits-tab-pane" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <tbody>
+                                        @foreach (var item in Model.DashboardVm.RecentVisitRequests.Take(5))
+                                        {
+                                            <tr><td class="ps-3"><div class="d-flex align-items-center"><div class="avatar-circle-sm bg-secondary-subtle text-secondary"><span>@item.UserName.First()</span></div><div class="ms-2"><div class="fw-bold">@item.UserName</div><div class="small text-muted">@item.PropertyName</div></div></div></td><td class="text-end pe-3">@if (item.Status == "Pending")
+                                                    {
+                                                        <span class="badge text-bg-warning">در انتظار</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge text-bg-info">@item.Status</span>
+                                                    }</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="submissions-tab-pane" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <tbody>
+                                        @foreach (var item in Model.DashboardVm.PropertySubmissions.Take(5))
+                                        {
+                                            <tr><td class="ps-3"><div class="d-flex align-items-center"><div class="avatar-circle-sm bg-info-subtle text-info"><span>@item.FullName.First()</span></div><div class="ms-2"><div class="fw-bold">@item.FullName</div><div class="small text-muted">@item.Title</div></div></div></td><td class="text-end pe-3"><span class="badge text-bg-info">@item.TransactionType</span></td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="requests-tab-pane" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <tbody>
+                                        @foreach (var item in Model.DashboardVm.PropertyRequests.Take(5))
+                                        {
+                                            <tr>
+                                                <td class="ps-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-circle-sm bg-primary-subtle text-primary"><span>@item.FullName.First()</span></div><div class="ms-2">
+                                                            <div class="fw-bold">@item.FullName</div>
+                                                            <div class="small text-muted">@item.PhoneNumber</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-end pe-3"><span class="badge text-bg-primary">@item.TransactionType</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- نمودار وضعیت درخواست‌ها -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">تفکیک وضعیت درخواست‌ها</h3>
-            <div class="mx-auto" style="position: relative; height:300px; width:100%; max-width:300px">
-                <canvas id="requestsChart"></canvas>
+        <div class="col-lg-4">
+            <div class="vstack gap-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light"><h5 class="card-title mb-0 fw-bold">تفکیک کارهای در انتظار</h5></div>
+                    <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 250px;">
+                        <div style="position: relative; height:200px; width:100%; max-width:200px">
+                            <canvas id="pendingTasksChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light"><h5 class="card-title mb-0 fw-bold">پربازدیدترین املاک</h5></div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var property in Model.DashboardVm.MostViewedProperties.Take(3))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center"><div class="text-truncate"><div class="fw-bold text-truncate">@property.Title</div><div class="small text-muted">@property.Price.ToString("N0") تومان</div></div><a href="/PropertyDetails/@property.Id" class="btn btn-sm btn-outline-primary ms-2" target="_blank">مشاهده</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .avatar-lg {
+        min-width: 4rem;
+    }
+
+    .avatar-title {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 4rem;
+        width: 4rem;
+    }
+
+    .avatar-circle-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .card-link-hover {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .card-link-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+</style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const pendingRequests = @Model.DashboardVm.PendingVisitRequests;
-            const totalRequests = @Model.DashboardVm.TotalVisitRequests;
-            const otherRequests = totalRequests - pendingRequests;
+            // کد جاوااسکریپت نمودار (بدون تغییر)
+            const pendingVisits = @Model.DashboardVm.PendingVisitRequests;
+            const pendingSubmits = @Model.DashboardVm.PendingSubmitProperties;
+            const pendingRequests = @Model.DashboardVm.PendingRequestProperties;
 
-            const requestsCtx = document.getElementById('requestsChart').getContext('2d');
+            const requestsCtx = document.getElementById('pendingTasksChart').getContext('2d');
             new Chart(requestsCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['در انتظار', 'سایر'],
+                    labels: ['درخواست بازدید', 'سپردن ملک', 'تقاضای ملک'],
                     datasets: [{
-                        data: [pendingRequests, otherRequests],
-                        backgroundColor: ['#f59e0b', '#3b82f6'],
-                        hoverBackgroundColor: ['#d97706', '#2563eb'],
+                        data: [pendingVisits, pendingSubmits, pendingRequests],
+                        backgroundColor: ['#ffc107', '#0dcaf0', '#fd7e14'],
                         borderColor: '#fff',
                         borderWidth: 2
                     }]
@@ -201,21 +194,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '70%',
+                    cutout: '75%',
                     plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                font: { family: "'Vazirmatn', sans-serif" },
-                                padding: 20
-                            }
-                        },
-                        tooltip: {
-                            rtl: true,
-                            bodyFont: { family: "'Vazirmatn', sans-serif" },
-                            titleFont: { family: "'Vazirmatn', sans-serif" }
-                        }
+                        legend: { display: true, position: 'bottom', labels: { font: { family: "Vazirmatn, sans-serif" }, padding: 15 } },
+                        tooltip: { rtl: true, bodyFont: { family: "Vazirmatn, sans-serif" }, titleFont: { family: "Vazirmatn, sans-serif" } }
                     }
                 }
             });

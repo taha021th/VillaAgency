@@ -20,6 +20,12 @@ namespace VillaAgency.Infrastructure.Repositories
             await _context.PropertySubmissions.InsertOneAsync(entity);
         }
 
+
+        public async Task<long> CountAsync(Expression<Func<PropertySubmission, bool>> filter)
+        {
+            return await _context.PropertySubmissions.CountDocumentsAsync(filter);
+        }
+
         public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
@@ -40,6 +46,18 @@ namespace VillaAgency.Infrastructure.Repositories
         {
             var filter = Builders<PropertySubmission>.Filter.Eq(p => p.Id, id);
             return await _context.PropertySubmissions.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<PropertySubmission>> GetSomeAsync<TKey>(Expression<Func<PropertySubmission, bool>> filter, Expression<Func<PropertySubmission, TKey>> keySelector, int count, bool descending = true)
+        {
+
+            var sortDefinition = new ExpressionFieldDefinition<PropertySubmission, TKey>(keySelector);
+            var sort = descending
+                ? Builders<PropertySubmission>.Sort.Descending(sortDefinition)
+                : Builders<PropertySubmission>.Sort.Ascending(sortDefinition);
+
+            return await _context.PropertySubmissions.Find(filter).Sort(sort).Limit(count).ToListAsync();
+
         }
 
         public async Task UpdateAsync(PropertySubmission entity, CancellationToken cancellationToken)
